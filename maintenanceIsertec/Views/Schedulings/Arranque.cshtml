@@ -1,0 +1,982 @@
+﻿@model maintenanceIsertec.Models.Arranque.arranqueRutina
+@using maintenanceIsertec.Models.Consult
+@{
+    ViewBag.Title = "Rutina de Arranque";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script type='text/javascript'>
+    function showS2() {
+        document.getElementById('tuberiaDiv').style.display = "block";
+    }
+    function hideS2() {
+        document.getElementById('tuberiaDiv').style.display = "none";
+    }
+
+    function showS4() {
+        document.getElementById('aceite').style.display = "block";
+    }
+    function hideS4() {
+        document.getElementById('aceite').style.display = "none";
+    }
+    function showS3() {
+        document.getElementById('presion').style.display = "block";
+    }
+    function hideS3() {
+        document.getElementById('presion').style.display = "none";
+    }
+    function confirmation() {
+        document.getElementById('hiddenElement').style.display = "none";
+        document.getElementById('headerInformation').style.display = "none";
+        document.getElementById('hiddenElementEmail').style.display = "block";
+    }
+
+    function contractInformation() {
+        if ((document.getElementById('contract').value != "")) {
+            $('#ModalContract').modal('show');
+        }
+    }
+</script>
+<div class="container">
+    <div id="headerInformation">
+        <span class="badge badge-success float-left">Energía y Aplicaciones</span>
+        <span class="badge badge-success float-right">Programado</span><br />
+        <h4>Arranque del Equipo</h4>
+        <h5>Lista de Control – Pre Orden de Trabajo para Solución de Enfriamiento</h5>
+        <hr />
+        <h4>Detalles del Equipo / Sitio</h4>
+        @{
+            string rutinaAplicada = string.Empty;
+            int callID = 0;
+            string docNum = string.Empty;
+            string lineNum = string.Empty;
+            int contractID = 0;
+        }
+
+        @foreach (List itemHeader in ViewBag.header)
+        {
+            rutinaAplicada = itemHeader.U_RutinaMantenimiento;
+            docNum = itemHeader.DocNum;
+            callID = itemHeader.callID;
+            lineNum = itemHeader.Line;
+            contractID = itemHeader.contractID;
+
+            <div class="form-group row">
+                <div class="col-sm-4">
+                    <strong><label class="control-label">Orden de Trabajo </label></strong>
+                    <input type="text" class="form-control" value="@string.Concat(itemHeader.DocNum, "-", itemHeader.Line)" readonly>
+                </div>
+                @if (itemHeader.contractID > 0)
+                {
+                    <div class="col-sm-4">
+                        <strong><label class="control-label">No. Contrato </label></strong>
+                        <div class="input-group">
+                            <input type="text" class="form-control" value="@itemHeader.contractID" id="contract" readonly>
+                            <button class="btn btn-primary" type="button" onclick="contractInformation()"><i class="fas fa-eye"></i></button>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-sm-4">
+                        <strong><label class="control-label">No. Contrato </label></strong>
+                        <div class="input-group">
+                            <input type="text" class="form-control" value="N/A" id="contract" readonly>
+                            <button class="btn btn-primary" type="button" onclick="contractInformation()" disabled><i class="fas fa-eye"></i></button>
+                        </div>
+                    </div>
+                }
+            </div>
+            <fieldset disabled>
+                <div class="form-group row">
+                    <div class="col-sm-4">
+                        <strong><label class="control-label">Nombre del Cliente </label></strong>
+                        <input type="text" class="form-control" value="@itemHeader.custmrName">
+                    </div>
+                    <div class="col-sm-4">
+                        <strong><label class="control-label">Dirección </label></strong>
+                        <input type="text" class="form-control" value="@itemHeader.Address">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-8">
+                        <strong><label class="control-label">Descripción de la Unidad de Energia </label></strong>
+                        <input type="text" class="form-control" value="@itemHeader.itemName">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-4">
+                        <strong><label class="control-label">Código Artículo </label></strong>
+                        <input type="text" class="form-control" value="@itemHeader.itemCode">
+                    </div>
+                    <div class="col-sm-4">
+                        <strong><label class="control-label">Número de Serie </label></strong>
+                        <input type="text" class="form-control" value="@itemHeader.manufSN">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-4">
+                        <strong><label class="control-label">Rutina de Mantenimiento a aplicar </label></strong>
+                        <input type="text" class="form-control" value="@itemHeader.U_RutinaMantenimiento">
+                    </div>
+                    <div class="col-sm-4">
+                        <strong><label class="control-label">Tratado por </label></strong>
+                        <input type="text" class="form-control" value="@itemHeader.U_NAME">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-8">
+                        <strong><label class="control-label">Datos Adicionales </label></strong>
+                        <input type="text" class="form-control" value="@itemHeader.U_DatosAdicionales">
+                    </div>
+                </div>
+            </fieldset>
+
+        }
+        <br>
+    </div>
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div style="display:none">
+            <div class="col-sm-8" style="display:none">
+                <label class="control-label">Número de Llamada</label>
+                @Html.EditorFor(model => model.U_DocNum, new { htmlAttributes = new { @Value = docNum, @class = "form-control", @readonly = "readonly" } })
+            </div>
+            <div class="col-sm-4" style="display:none">
+                <label class="control-label">Número de Ticket</label>
+                @Html.EditorFor(model => model.U_Linea, new { htmlAttributes = new { @Value = lineNum, @class = "form-control", @readonly = "readonly" } })
+            </div>
+            <div class="col-sm-4" style="display:none">
+                <label class="control-label">Número de Ticket</label>
+                @Html.EditorFor(model => model.U_ServiceCallID, new { htmlAttributes = new { @Value = callID, @class = "form-control", @readonly = "readonly" } })
+            </div>
+        </div>
+        <div id="hiddenElement">
+            <h4>Ambiente</h4>
+            <hr />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">1.	¿Se ha referido al manual de instalación para asegurarse de que se cumple con los requisitos de instalación y permisos para todos los componentes del sistema?  </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S1_P1, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S1_P1, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S1_P1, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">2. ¿Hay un cuarto de carga para la operación adecuada? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S1_P2, new { id = "selector", @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S1_P2, new { id = "unselector", @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S1_P2, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <h4>Inspección Mecánica </h4>
+            <hr />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">1. ¿El tamaño de la tubería de refrigeración cumple con lo establecido en el manual de instalación?</label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P1, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @onclick = "showS2()" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P1, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @onclick = "hideS2()" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P1, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div id="tuberiaDiv" style="display:none">
+                <div class="form-row">
+                    <div class="col-sm-6">
+                        <label class="control-label">Ingrese tamaño Tuberia de descarga: </label>
+                        @Html.EditorFor(model => model.U_S2_P1_Desc, new { htmlAttributes = new { @class = "form-control", @maxlength = "25" } })
+                    </div>
+                </div>
+                <br />
+
+                <div class="form-row">
+                    <div class="col-sm-6">
+                        <label class="control-label">Ingrese tamaño de tubería de linea de líquido: </label>
+                        @Html.EditorFor(model => model.U_S2_P1_Desc1, new { htmlAttributes = new { @class = "form-control", @maxlength = "25" } })
+                    </div>
+                </div>
+                <br />
+            </div>
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">2. ¿La tubería cumple con los códigos ASHRAE y los códigos locales y nacionales?</label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P2, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P2, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P2, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">3. ¿La tubería está completa, aislada y debidamente apoyada? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P3, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P3, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P3, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">4. ¿La tubería no tiene deshechos? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P4, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P4, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P4, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <h4>Tubería del condensador de refrigeración por aire </h4>
+            <hr />
+            <label class="control-label">1. Registre el largo y diámetro de la línea horizontal de descarga:</label><br />
+            <div class="form-row">
+                <div class="col-sm-3">
+                    <strong><label class="control-label">Largo (mts)</label></strong>
+                    @Html.DropDownListFor(model => Model.U_S3_P1_largo, new List<SelectListItem>
+                    {
+                       new SelectListItem{ Text="Seleccione valor", Value = "0" },
+                       new SelectListItem{ Text="10", Value = "10" },
+                       new SelectListItem{ Text="20", Value = "20" },
+                       new SelectListItem{ Text="30", Value = "30" },
+                       new SelectListItem{ Text="40", Value = "40" },
+                       new SelectListItem{ Text="50", Value = "50" },
+                       new SelectListItem{ Text="60", Value = "60" },
+                       new SelectListItem{ Text="70", Value = "70" },
+                       new SelectListItem{ Text="80", Value = "80" },
+                       new SelectListItem{ Text="90", Value = "90" },
+                    }, new { @class = "form-control" })
+                </div>
+                <div class="col-sm-3">
+                    <strong>
+                        <label class="control-label">Diámetro (pulg)</label>
+                    </strong>
+                    @Html.DropDownListFor(model => Model.U_S3_P1_diametro, new List<SelectListItem>
+                    {
+                   new SelectListItem{ Text="Seleccione valor", Value = "0" },
+                       new SelectListItem{ Text="1/4", Value = "1/4" },
+                       new SelectListItem{ Text="3/8", Value = "3/8" },
+                       new SelectListItem{ Text="1/2", Value = "1/2" },
+                       new SelectListItem{ Text="5/8", Value = "5/8" },
+                       new SelectListItem{ Text="3/4", Value = "3/4" },
+                       new SelectListItem{ Text="7/8", Value = "7/8" },
+                       new SelectListItem{ Text="1", Value = "1" },
+                       new SelectListItem{ Text="1 1/8", Value = "1 1/8" },
+                       new SelectListItem{ Text="1 3/8", Value = "1 3/8" },
+                       new SelectListItem{ Text="1 5/8", Value = "1 5/8" },
+                    }, new { @class = "form-control" })
+                </div>
+            </div><br />
+
+            <label class="control-label">2. Registre el largo y diámetro de la línea vertical de descarga: </label><br />
+            <div class="form-row">
+
+                <div class="col-sm-3">
+                    <strong><label class="control-label">Largo (mts)</label></strong>
+                    @Html.DropDownListFor(model => Model.U_S3_P2_largo, new List<SelectListItem>
+                    {
+                   new SelectListItem{ Text="Seleccione valor", Value = "0" },
+                       new SelectListItem{ Text="10", Value = "10" },
+                       new SelectListItem{ Text="20", Value = "20" },
+                       new SelectListItem{ Text="30", Value = "30" },
+                       new SelectListItem{ Text="40", Value = "40" },
+                       new SelectListItem{ Text="50", Value = "50" },
+                       new SelectListItem{ Text="60", Value = "60" },
+                       new SelectListItem{ Text="70", Value = "70" },
+                       new SelectListItem{ Text="80", Value = "80" },
+                       new SelectListItem{ Text="90", Value = "90" },
+                    }, new { @class = "form-control" })
+
+                </div>
+                <div class="col-sm-3">
+                    <strong><label class="control-label">Diámetro (pulg)</label></strong>
+                    @Html.DropDownListFor(model => Model.U_S3_P2_diametro, new List<SelectListItem>
+                    {
+                   new SelectListItem{ Text="Seleccione valor", Value = "0" },
+                        new SelectListItem{ Text="1/4", Value = "1/4" },
+                       new SelectListItem{ Text="3/8", Value = "3/8" },
+                       new SelectListItem{ Text="1/2", Value = "1/2" },
+                       new SelectListItem{ Text="5/8", Value = "5/8" },
+                       new SelectListItem{ Text="3/4", Value = "3/4" },
+                       new SelectListItem{ Text="7/8", Value = "7/8" },
+                       new SelectListItem{ Text="1", Value = "1" },
+                       new SelectListItem{ Text="1 1/8", Value = "1 1/8" },
+                       new SelectListItem{ Text="1 3/8", Value = "1 3/8" },
+                       new SelectListItem{ Text="1 5/8", Value = "1 5/8" },
+                    }, new { @class = "form-control" })
+
+                </div>
+            </div><br />
+            <label class="control-label">3. Registre el largo y diámetro de la línea  de líquido: </label><br />
+            <div class="form-row">
+
+                <div class="col-sm-3">
+                    <strong><label class="control-label">Largo (mts)</label></strong>
+                    @Html.DropDownListFor(model => Model.U_S3_P14_largo, new List<SelectListItem>
+                    {
+                   new SelectListItem{ Text="Seleccione valor", Value = "0" },
+                       new SelectListItem{ Text="10", Value = "10" },
+                       new SelectListItem{ Text="20", Value = "20" },
+                       new SelectListItem{ Text="30", Value = "30" },
+                       new SelectListItem{ Text="40", Value = "40" },
+                       new SelectListItem{ Text="50", Value = "50" },
+                       new SelectListItem{ Text="60", Value = "60" },
+                       new SelectListItem{ Text="70", Value = "70" },
+                       new SelectListItem{ Text="80", Value = "80" },
+                       new SelectListItem{ Text="90", Value = "90" },
+                    }, new { @class = "form-control" })
+
+                </div>
+                <div class="col-sm-3">
+                    <strong><label class="control-label">Diametro (pulg)</label></strong>
+                    @Html.DropDownListFor(model => Model.U_S3_P14_diametro, new List<SelectListItem>
+                    {
+                   new SelectListItem{ Text="Seleccione valor", Value = "0" },
+                        new SelectListItem{ Text="1/4", Value = "1/4" },
+                       new SelectListItem{ Text="3/8", Value = "3/8" },
+                       new SelectListItem{ Text="1/2", Value = "1/2" },
+                       new SelectListItem{ Text="5/8", Value = "5/8" },
+                       new SelectListItem{ Text="3/4", Value = "3/4" },
+                       new SelectListItem{ Text="7/8", Value = "7/8" },
+                       new SelectListItem{ Text="1", Value = "1" },
+                       new SelectListItem{ Text="1 1/8", Value = "1 1/8" },
+                       new SelectListItem{ Text="1 3/8", Value = "1 3/8" },
+                       new SelectListItem{ Text="1 5/8", Value = "1 5/8" },
+                    }, new { @class = "form-control" })
+
+                </div>
+            </div><br />
+            <label class="control-label">4. Registre el número de trampas instaladas en la tubería vertical de descargue: </label><br />
+            <div class="form-row">
+                <div class="col-sm-3">
+                    <strong><label class="control-label">Número de Trampas</label></strong>
+                    @Html.DropDownListFor(model => Model.U_S3_P3, new List<SelectListItem>
+                    {
+                   new SelectListItem{ Text="Seleccione valor", Value = "0" },
+                       new SelectListItem{ Text="1", Value = "1" },
+                       new SelectListItem{ Text="2", Value = "2" },
+                       new SelectListItem{ Text="3", Value = "3" },
+                       new SelectListItem{ Text="4", Value = "4" },
+                       new SelectListItem{ Text="5", Value = "5" },
+                       new SelectListItem{ Text="6", Value = "6" },
+                       new SelectListItem{ Text="7", Value = "7" },
+                       new SelectListItem{ Text="8", Value = "8" },
+                       new SelectListItem{ Text="9", Value = "9" },
+                       new SelectListItem{ Text="10", Value = "10" },
+                    }, new { @class = "form-control" })
+                </div>
+            </div><br />
+            <label class="control-label">5. Registre el número de codos (90° y 45°) utilizados en la tubería de descargue: </label><br />
+            <div class="form-row">
+
+                <div class="col-sm-3">
+                    <strong><label class="control-label">Codos 45°</label></strong>
+                    @Html.DropDownListFor(model => Model.U_S3_P4_45, new List<SelectListItem>
+                    {
+                   new SelectListItem{ Text="Seleccione valor", Value = "0" },
+                       new SelectListItem{ Text="1", Value = "1" },
+                       new SelectListItem{ Text="2", Value = "2" },
+                       new SelectListItem{ Text="3", Value = "3" },
+                       new SelectListItem{ Text="4", Value = "4" },
+                       new SelectListItem{ Text="5", Value = "5" },
+                       new SelectListItem{ Text="6", Value = "6" },
+                       new SelectListItem{ Text="7", Value = "7" },
+                       new SelectListItem{ Text="8", Value = "8" },
+                       new SelectListItem{ Text="9", Value = "9" },
+                       new SelectListItem{ Text="10", Value = "10" },
+                       new SelectListItem{ Text="11", Value = "11" },
+                       new SelectListItem{ Text="12", Value = "12" },
+                       new SelectListItem{ Text="13", Value = "13" },
+                       new SelectListItem{ Text="14", Value = "14" },
+                       new SelectListItem{ Text="15", Value = "15" },
+                       new SelectListItem{ Text="16", Value = "16" },
+                       new SelectListItem{ Text="17", Value = "17" },
+                       new SelectListItem{ Text="18", Value = "18" },
+                       new SelectListItem{ Text="19", Value = "19" },
+                       new SelectListItem{ Text="20", Value = "20" },
+                       new SelectListItem{ Text="21", Value = "21" },
+                       new SelectListItem{ Text="22", Value = "22" },
+                       new SelectListItem{ Text="23", Value = "23" },
+                       new SelectListItem{ Text="24", Value = "24" },
+                       new SelectListItem{ Text="25", Value = "25" },
+                       new SelectListItem{ Text="26", Value = "26" },
+                       new SelectListItem{ Text="27", Value = "27" },
+                       new SelectListItem{ Text="28", Value = "28" },
+                       new SelectListItem{ Text="29", Value = "29" },
+                       new SelectListItem{ Text="30", Value = "30" },
+                    }, new { @class = "form-control" })
+                </div>
+                <div class="col-sm-3">
+                    <strong><label class="control-label">Codos 90°</label></strong>
+                    @Html.DropDownListFor(model => Model.U_S3_P4_90, new List<SelectListItem>
+                   {
+                   new SelectListItem{ Text="Seleccione valor", Value = "0" },
+                      new SelectListItem{ Text="1", Value = "1" },
+                       new SelectListItem{ Text="2", Value = "2" },
+                       new SelectListItem{ Text="3", Value = "3" },
+                       new SelectListItem{ Text="4", Value = "4" },
+                       new SelectListItem{ Text="5", Value = "5" },
+                       new SelectListItem{ Text="6", Value = "6" },
+                       new SelectListItem{ Text="7", Value = "7" },
+                       new SelectListItem{ Text="8", Value = "8" },
+                       new SelectListItem{ Text="9", Value = "9" },
+                       new SelectListItem{ Text="10", Value = "10" },
+                       new SelectListItem{ Text="11", Value = "11" },
+                       new SelectListItem{ Text="12", Value = "12" },
+                       new SelectListItem{ Text="13", Value = "13" },
+                       new SelectListItem{ Text="14", Value = "14" },
+                       new SelectListItem{ Text="15", Value = "15" },
+                       new SelectListItem{ Text="16", Value = "16" },
+                       new SelectListItem{ Text="17", Value = "17" },
+                       new SelectListItem{ Text="18", Value = "18" },
+                       new SelectListItem{ Text="19", Value = "19" },
+                       new SelectListItem{ Text="20", Value = "20" },
+                       new SelectListItem{ Text="21", Value = "21" },
+                       new SelectListItem{ Text="22", Value = "22" },
+                       new SelectListItem{ Text="23", Value = "23" },
+                       new SelectListItem{ Text="24", Value = "24" },
+                       new SelectListItem{ Text="25", Value = "25" },
+                       new SelectListItem{ Text="26", Value = "26" },
+                       new SelectListItem{ Text="27", Value = "27" },
+                       new SelectListItem{ Text="28", Value = "28" },
+                       new SelectListItem{ Text="29", Value = "29" },
+                       new SelectListItem{ Text="30", Value = "30" },
+                   }, new { @class = "form-control" })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">6. Calcule y registre el total de la longitud (incluyendo toda la tubería, codos, conectores y válvulas de aislamiento) de la línea de descarga de refrigeración: </label><br />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-sm-6">
+                    @Html.EditorFor(model => model.U_S3_P5, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">7. ¿Se instaló una trampa P invertida en la línea de descarga del condensador? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P6, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P6, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P6, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">8. ¿Se presurizó la tubería y se verificó que no tuviera fugas? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P7, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @onclick = "showS3()" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P7, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @onclick = "hideS3()" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P7, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <div id="presion" style="display:none">
+                        <label class="control-label">Ingrese presión del calibrador: </label>
+                        @Html.EditorFor(model => model.U_S3_P7_Desc, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                    <br />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">9. ¿Se abrieron todas las válvulas de aislamiento y se deshidrataron las tuberías de refrigeración?  </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P8, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P8, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P8, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                        <span asp-validation-for="U_S3_P8" class="text-danger"></span>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">10. Registre el nivel final de micrones:</label><br />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-sm-6">
+                    @Html.EditorFor(model => model.U_S3_P9, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">11. ¿En el sitio hay refrigerante disponible para cargar el sistema?  </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P10, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P10, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P10, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">12. ¿El cableado del calentador del receptor externo se instaló según el diagrama de cableado del condensador? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P11, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P11, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+
+                        </div>
+                        <span asp-validation-for="U_S3_P11" class="text-danger"></span>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">13. En caso de ser necesario, ¿hay aceite adicional disponible en el sitio?</label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P12, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @onclick = "showS4()" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P12, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @onclick = "hideS4()" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P12, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <div id="aceite" style="display:none">
+                        <label class="control-label">Ingrese cantidad aciete: </label>
+                        @Html.EditorFor(model => model.U_S3_P12_aceite, new { htmlAttributes = new { @class = "form-control", @maxlength = "15" } })
+                    </div>
+                    <br />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">14. ¿Se utiliza tubería rígida de cobre ACR Tipo L para la tubería refrigerante? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P13, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P13, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P13, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <h4>Tubería de campo para suministro de agua Humidificador  </h4>
+            <hr />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">1. ¿Se ha instalado y conectado la tubería de suministro de agua a la unidad según las instrucciones incluidas en el manual de instalación? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S4_P1, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S4_P1, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S4_P1, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <h4>Otros accesorios/opciones</h4>
+            <hr />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">1. ¿Se instaló la bomba de condensado/drenaje de condensado? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S6_P1, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S6_P1, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S6_P1, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">2. ¿Se han instalado ductos o plenums opcionales? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S6_P2, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S6_P2, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S6_P2, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <h4>Inspección eléctrica</h4>
+            <hr />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">1. ¿Todas las conexiones de cableado de poder/control se han completado en los equipos internos y externos (y opciones externas) según se especifica en el manual de instalación? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S7_P1, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S7_P1, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S7_P1, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">2. ¿Todas las conexiones de cableado de poder/control del equipo interno y externo (y opciones externas) cumplen con los códigos locales, estatales y nacionales? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S7_P2, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S7_P2, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S7_P2, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">3. ¿La energía eléctrica de entrada coincide con la placa de identificación del equipo? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S7_P3, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S7_P3, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S7_P3, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-3">
+                    <strong><label class="control-label">Clibre Conductor</label></strong>
+                    @Html.EditorFor(model => model.U_S7_P3_1, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+
+                </div>
+                <div class="col-sm-3">
+                    <strong><label class="control-label">Breaker</label></strong>
+                    @Html.EditorFor(model => model.U_S7_P3_2, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">4. ¿Se ha completado toda la instalación de cableado en el campo y cumple con las especificaciones en el manual de instalación y en la placa de identificación del equipo? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S7_P4, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S7_P4, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S7_P4, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">5. ¿La instalación del cableado en el campo cumple con los códigos locales, estatales y nacionales? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S7_P5, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S7_P5, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S7_P5, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">6. Voltaje de entrada AB/AC/BC (VAC)</label><br />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-sm-3">
+                    <strong><label class="control-label">Unidad Externa</label></strong>
+                    @Html.EditorFor(model => model.U_S8_P1, new { htmlAttributes = new { @class = "form-control", @maxlength = "25" } })
+                </div>
+                <div class="col-sm-3">
+                    <strong> <label class="control-label">Unidad Interna</label></strong>
+                    @Html.EditorFor(model => model.U_S8_P2, new { htmlAttributes = new { @class = "form-control", @maxlength = "25" } })
+                </div>
+            </div><br />
+            <h4>Información adicional</h4>
+            <hr />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">1.	¿Se revisó el documento adjunto, guía de Instalación? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S9_P1, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S9_P1, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S9_P1, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">2.	¿La instalación está completa y el sistema listo para el arranque? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S9_P2, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S9_P2, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S9_P2, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">3.	¿El personal interno estará disponible para recibir un breve entrenamiento una vez finalizado el arranque? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S9_P3, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S9_P3, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S9_P3, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <button style="float:right" type="button" id="nextBtn" onclick="confirmation()" class="btn btn-second">Finalizar Rutina</button>
+        </div>
+        <div id="hiddenElementEmail" style="display:none">
+            <div class="our-skills">
+                <div class="card" style="border:none !important">
+                    <div class="box-shadow">
+                        <h4 class="text-center"> Confirmación de Servicio</h4>
+                        <hr />
+                        <div class="form-row">
+                            <div class="col-sm-12">
+                                <label>La orden de trabajo <strong> @string.Concat(docNum, "-", lineNum) </strong>  ha sido finalizada!</label> <br />
+                                <label class="control-label">Ingrese correo electrónico para enviar la confirmación:</label><br />
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-sm-12">
+                                @Html.EditorFor(model => model.U_correo, new { htmlAttributes = new { @class = "form-control", @required = "required", @type = "email", @multiple = "multiple", @maxlength = "200" } })
+                            </div>
+                        </div><br />
+                              <input style="float:right" type="submit" value="Enviar Confirmación" class="btn btn-primary" onclick="this.form.submit(); this.disabled = true; this.value = 'Enviando Confirmacion...';" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <br />
+    <br />
+    <br />
+    @{
+        var data = new maintenanceIsertec.Connection.Contracts.DataContracts().getDetails(contractID);
+
+        <div class="modal fade" id="ModalContract" tabindex="-1" role="dialog" aria-labelledby="ModalContract" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="text-center modal-title" id="ModalContract">Cobertura del Contrato</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <fieldset disabled>
+                            <div class="form-group row">
+                                <div class="col-sm-12">
+                                    <strong><label class="control-label">No. Contrato </label></strong>
+                                    <input type="text" class="form-control" value="@data.ContractID">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-12">
+                                    <strong><label class="control-label">Tratado por </label></strong>
+                                    <input type="text" class="form-control" value="@data.U_NAME">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-6">
+                                    <strong><label class="control-label">Número de OV </label></strong>
+                                    <input type="text" class="form-control" value="@data.U_numeroOV">
+                                </div>
+                                <div class="col-sm-6">
+                                    <strong><label class="control-label">Tipo Contrato </label></strong>
+                                    <input type="text" class="form-control" value="@data.Tipos">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-12">
+                                    <strong><label class="control-label">Cobertura </label></strong>
+                                    <textarea rows="5" type="text" class="form-control">@data.Remarks1</textarea>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    <div class="modal-footer">
+                        @Html.ActionLink("Detalles", "details", "Contracts", new
+                   {
+                       id = data.ContractID
+                   }, new { @class = "btn btn-primary" })
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+</div>

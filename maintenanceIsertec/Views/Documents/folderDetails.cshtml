@@ -1,0 +1,220 @@
+﻿@model PagedList.IPagedList<maintenanceIsertec.Models.Files>
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "Mis Documentos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript" src="~/Content/WebCam.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        Webcam.set({
+            width: 600,
+            height: 400,
+            image_format: 'jpeg',
+            jpeg_quality: 300
+        });
+        Webcam.attach('#idwebcam');
+
+        $("#btncapture").click(function () {
+            Webcam.snap(function (data_uri) {
+                $("#idcaptured")[0].src = data_uri;
+                $("#btnUpload").removeAttr("disabled");
+                $('#idwebcam').hide();
+                $('#sectionup').show();
+                $('#idcaptured').show();
+            });
+        })
+        $("#btnUpload").click(function () {
+            var id = $("#id").val();
+            var nombre = $("#nombre").val();
+            $.ajax({
+
+                type: "POST",
+                url: "/Documents/SaveCapturedImage",
+                data: "{data: '" + $("#idcaptured")[0].src + "', comments: '" + $("#comments").val() + "', id: '" + id + "', nombre: '" + nombre + "'}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) { }
+            });
+        });
+        $("#btnrefresh").click(function () {
+            $('#idwebcam').show();
+            $('#idcaptured').hide();
+        });
+    });
+</script>
+<div class="container-md">
+    <h4 class="text-center">Archivos en: <strong> @ViewBag.nombre</strong> <span class="badge badge-secondary">@Model.TotalItemCount</span></h4>
+
+
+
+    <p>
+        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+            Cargar Archivo
+        </button>
+        <button class="btn btn-second" type="button" data-toggle="collapse" data-target="#collapseExample2" aria-expanded="false" aria-controls="collapseExample2">
+            Capturar fotografia
+        </button>
+    </p>
+    <div class="collapse" id="collapseExample">
+        <div class="card card-body">
+            @using (Html.BeginForm("UploadFilesF", "Documents", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                <div class="form-row">
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="userFile" name="userFile" required>
+                        <label class="custom-file-label" for="validatedCustomFile">Cargar Documento...</label>
+                    </div>
+                </div>
+                <br />
+                <input type="text" class="form-control" placeholder="Ingrese comentarios......" name="comments" aria-describedby="basic-addon2" required>
+                <input type="text" class="form-control" placeholder="Ingrese comentarios......" name="id" value="@ViewBag.id"   style="display:none">
+                <input type="text" class="form-control" placeholder="Ingrese comentarios......" name="nombre" value="@ViewBag.nombre" style="display:none">
+                <br />
+                <div class="form-row">
+                    <input type="submit" class="btn btn-second" style="float: right" value="Cargar Archivo" />
+                </div>
+            }
+            <br />
+        </div>
+        <br /><br />
+    </div>
+    <div class="collapse" id="collapseExample2">
+        <div class="card card-body">
+            <h4>Tome una fotografia</h4>
+            <hr />
+            <div class="row">
+                <div class="col-md-8 offset-md-2">
+                    <div id="idwebcam"></div>
+                    <img style="width:600px;height:400px;display:none" id="idcaptured" />
+                </div>
+            </div>
+            <br />
+            <div class="row" id="takephoto">
+                <br />
+                <input type="button" id="btncapture" class="btn btn-second" value=" Capturar" />&nbsp;&nbsp;
+                <input type="button" id="btnrefresh" class="btn btn-primary" value=" Tomar de nuevo" />
+            </div>
+            <br />
+
+            <div class="row" id="sectionup" style="display:none">
+                <br />
+
+                <br />
+                <input type="text" class="form-control" placeholder="Ingrese comentarios......" id="comments" aria-describedby="basic-addon2" required>
+                <input type="text" class="form-control" placeholder="Ingrese comentarios......" id="id" value="@ViewBag.id" style="display:none">
+                <input type="text" class="form-control" placeholder="Ingrese comentarios......" id="nombre" value="@ViewBag.nombre" style="display:none">
+                <input type="button" id="btnUpload" value="Cargar Foto" class="btn btn-second" />
+            </div>
+
+            <br />
+        </div>
+        <br /><br />
+    </div>
+
+    @using (Html.BeginForm("folderDetails", "Documents", FormMethod.Get))
+    {
+<div class="input-group mb-3">
+    <br />
+    <input type="text" class="form-control" placeholder="Buscar...." name="findString" aria-describedby="basic-addon2" required>
+    <div class="input-group-append">
+        <input type="submit" class="btn btn-success" value="Buscar" />
+        <button class="btn btn-primary bi bi-funnel-fill" type="button" data-toggle="collapse" data-target="#collapseFilters" aria-expanded="false" aria-controls="collapseFilters"><i class="fas fa-filter"></i></button>
+    </div>
+</div>
+    }
+
+    <table class="table table-responsive-sm table-hover">
+        <caption>Documentos Registrados</caption>
+        <thead class="thead-dark text-center">
+            <tr>
+                <th>
+                    Nombre Archivo
+                </th>
+                <th>
+                    Tipo Archivo
+                </th>
+                <th>
+                    Tamaño
+                </th>
+                <th>
+                    Propietario
+                </th>
+                <th>
+                    Compartido
+                </th>
+                <th>
+                    Comentarios
+                </th>
+                <th>
+                    Fecha Creación
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        @foreach (var item in Model)
+        {
+            <tr style="cursor:pointer !important" onclick="location.href = '@(Url.Action( "details", "Documents", new { id =item.id_file}))'">
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tipo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.peso)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.propietario)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.compartido)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.metadata)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.fecha_creacion)
+                </td>
+
+            </tr>
+        }
+    </table>
+    <a href="@Url.Action("ExportExcel", "Documents", new {  findString = ViewBag.findString })" class="float-left">
+        <span>
+            Exportar a Excel
+        </span>
+    </a>
+    <hr />
+    <p class="text-center">Página @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) de @Model.PageCount</p>
+    <br />
+    <nav>
+        <ul class="pagination justify-content-center">
+            @Html.PagedListPager(
+        Model,
+        page => Url.Action("list",
+        new
+        {
+            page,
+            findString = ViewBag.findString,
+            id = ViewBag.id,
+            nombre = ViewBag.nombre
+        }
+        ),
+        new PagedListRenderOptions()
+        {
+            LinkToFirstPageFormat = "<<",
+            LinkToPreviousPageFormat = "Anterior",
+            LinkToNextPageFormat = "Siuiente",
+            LinkToLastPageFormat = ">>",
+            DisplayEllipsesWhenNotShowingAllPageNumbers = false,
+            LiElementClasses = new List<string> { "page-item", "page-link" }
+        })
+        </ul>
+    </nav>
+
+    <br />
+    <br />
+</div>

@@ -1,0 +1,67 @@
+﻿@using maintenanceIsertec.Connection;
+@using maintenanceIsertec.Models;
+@{
+    ViewBag.Title = "Inicio - Personal Cloud";
+}
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+            ['Documents', 'Tipo de Documentos'],
+            ['Excel', 11],
+            ['Images', 2],
+            ['Word', 2],
+            ['Texto', 2],
+            ['PDF', 7]
+        ]);
+
+        var options = {
+            title: 'Mis documentos'
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+        chart.draw(data, options);
+    }
+</script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+            ['Año', 'Propios', 'Compartidos'],
+            ['Archivos', 98, 30],
+            ['Carpetas', 35, 19],
+        ]);
+
+        var options = {
+            title: 'Documentos Permitidos',
+            hAxis: { title: 'Year', titleTextStyle: { color: '#333' } },
+            vAxis: { minValue: 0 }
+        };
+
+        var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+    }
+</script>
+<h4 class="text-center">Bienvenido @string.Concat(Session["nombre"], " ", Session["apellido"]) </h4>
+<br />
+<div class="container-fluid">
+    <div class="row justify-content-md-center">
+
+        <div id="piechart" style="width: 900px; height: 500px;"></div>
+        <div id="chart_div" style="width: 900px; height: 500px;"></div>
+
+
+    </div>
+        @{Html.RenderAction("QuickAcces", "Home");}
+
+</div>
+
+

@@ -1,0 +1,155 @@
+﻿<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current', { packages: ['corechart', 'bar'] });
+    google.charts.setOnLoadCallback(DrawonLoad);
+
+    function DrawonLoad() {
+        $(function () {
+            $.ajax({
+                type: 'GET',
+                url: '/Home/GetOrdenesporTecico',
+                success: function (chartsdata) {
+
+                    var Data = chartsdata.JSONList;
+                    var data = new google.visualization.DataTable();
+
+                    data.addColumn('string', 'Tecnico');
+                    data.addColumn('number', 'Ordenes Finalizadas');
+
+
+                    for (var i = 0; i < Data.length; i++) {
+                        data.addRow([Data[i].Tecnico, Data[i].Ordenes]);
+                    }
+
+                    var chart = new google.visualization.BarChart(document.getElementById('chart_div1'));
+
+                    chart.draw(data,
+                        {
+                            title: 'Ordenes de Trabajo Finalizadas',
+                            chartArea: {
+                                width: '50%',
+                            },
+                            hAxis: {
+                                title: 'Total Finalizadas',
+                                minValue: 0
+                            },
+                            vAxis: {
+                                title: 'Técnico'
+                            }
+                        });
+
+                },
+                error: function () {
+                    alert("Error loading data! Please try again.");
+                }
+            });
+        })
+
+    }
+
+
+
+
+</script>
+<script>
+    google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.setOnLoadCallback(DrawonPie);
+
+    function DrawonPie() {
+        $(function () {
+            $.ajax({
+                type: 'GET',
+                url: '/Home/GetOrdenesPorRutinaEquipo',
+                success: function (chartsdata) {
+
+                    var Data = chartsdata.JSONList;
+                    var data = new google.visualization.DataTable();
+
+                    data.addColumn('string', 'Rutinas Equipo');
+                    data.addColumn('number', 'Cantidad');
+
+
+                    for (var i = 0; i < Data.length; i++) {
+                        data.addRow([Data[i].rutina, Data[i].cantidad]);
+                    }
+
+                    var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+                    chart.draw(data,
+                        {
+                            title: 'Ordenes de Trabajo por Rutina de Equipo'
+                        });
+
+                },
+                error: function () {
+                    alert("Error loading data! Please try again.");
+                }
+            });
+        })
+
+    }
+</script>
+
+<script>
+    /*  google.charts.load('current', { 'packages': ['corechart'] });
+      google.charts.setOnLoadCallback(DrawonArea);
+
+      function DrawonArea() {
+          $(function () {
+              $.ajax({
+                  type: 'GET',
+                  url: '/Home/GetOrdenesPorAño',
+                  success: function (chartsdata) {
+
+                      var Data = chartsdata.JSONList;
+                      var data = new google.visualization.DataTable();
+
+                      data.addColumn('string', 'Año');
+                      data.addColumn('number', 'Ordenes Finalizadas');
+
+
+                      for (var i = 0; i < Data.length; i++) {
+                          data.addRow([Data[i].año, Data[i].cantidad]);
+                      }
+
+                      var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
+
+                      chart.draw(data,
+                          {
+                              title: 'Ordenes de Trabajo por Año',
+                              hAxis: { title: 'Año', titleTextStyle: { color: '#333' } },
+                              vAxis: { minValue: 0 }
+                          });
+
+                  },
+                  error: function () {
+                      alert("Error loading data! Please try again.");
+                  }
+              });
+          })
+
+      } */
+</script>
+<h5 class="text-muted">Dashboard</h5>
+<br />
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div id="chart_div1" style="width: 100%; height: 500px;"></div>
+        </div>
+    </div>
+    <br />
+    <div class="col-md-6">
+        <div class="card">
+            <div id="piechart" style="width: 100%; height: 500px;"></div>
+        </div>
+    </div>
+</div>
+<!--  <div id="chart_div" style="width: 100%; height: 500px;"></div>-->
+<br />
+
+
+
+<br />
+<br />
+

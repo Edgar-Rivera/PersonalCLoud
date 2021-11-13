@@ -1,0 +1,102 @@
+﻿@model PagedList.IPagedList<maintenanceIsertec.Models.ServiceCallDashboard>
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "Llamadas de Servcicio - Isertec";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Llamadas de Servicio</h2>
+<br />
+
+<table class="table table-responsive-sm table-hover">
+    <caption>Llamadas de servicio abiertas</caption>
+    <thead class="thead-dark">
+        <tr>
+            <th>
+                CallID
+            </th>
+            <th>
+                DocNum
+            </th>
+            <th>
+                Linea
+            </th>
+            <th>
+                Estado
+            </th>
+            <th>
+                Tratado por
+            </th>
+            <th>
+                RUtina Equipo
+            </th>
+            <th>
+                Rutina Mantenimiento
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.callID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DocNum)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Line)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.U_Estado)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HandledBy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.U_RutinaEquipo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.U_RutinaMantenimiento)
+            </td>
+            <td>
+               
+                @Html.ActionLink("Detalles", "Details", new { /* id=item.PrimaryKey */ }) 
+            </td>
+        </tr>
+    }
+
+</table>
+<hr />
+<p class="text-center">Página @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) de @Model.PageCount</p>
+
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+        @Html.PagedListPager(
+    Model,
+    page => Url.Action("ListItems",
+    new
+    {
+        page
+    }
+    ),
+    new PagedListRenderOptions()
+    {
+
+        LinkToFirstPageFormat = "<<",
+        LinkToPreviousPageFormat = "Anterior",
+        LinkToNextPageFormat = "Siuiente",
+        LinkToLastPageFormat = ">>",
+        DisplayEllipsesWhenNotShowingAllPageNumbers = false,
+        LiElementClasses = new List<string> { "page-item", "page-link" }
+    })
+    </ul>
+</nav><br />
+
+
+
+
+

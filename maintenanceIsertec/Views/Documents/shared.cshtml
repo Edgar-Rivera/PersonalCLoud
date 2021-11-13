@@ -1,0 +1,96 @@
+﻿@model PagedList.IPagedList<maintenanceIsertec.Models.shared_files>
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "Compartido Conmigo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container-md">
+    <h4 class="text-center"> Compartidos Conmigo <span class="badge badge-secondary">@Model.TotalItemCount</span></h4>
+   
+
+    @using (Html.BeginForm("shared", "Documents", FormMethod.Get))
+    {
+        <div class="input-group mb-3">
+            <br />
+            <input type="text" class="form-control" placeholder="Buscar...." name="findString" aria-describedby="basic-addon2" required>
+            <div class="input-group-append">
+                <input type="submit" class="btn btn-success" value="Buscar" />
+                <button class="btn btn-primary bi bi-funnel-fill" type="button" data-toggle="collapse" data-target="#collapseFilters" aria-expanded="false" aria-controls="collapseFilters"><i class="fas fa-filter"></i></button>
+            </div>
+        </div>
+    }
+
+    <table class="table table-responsive-sm table-hover">
+        <caption>Documentos Registrados</caption>
+        <thead class="thead-dark text-center">
+            <tr>
+                <th>
+                    Nombre Archivo
+                </th>
+                <th>
+                    Detalles
+                </th>
+                <th>
+                    Propietario
+                </th>
+                <th>
+                    Fecha Compartido
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        @foreach (var item in Model)
+        {
+            <tr style="cursor:pointer !important" onclick="location.href = '@(Url.Action( "details", "Documents", new { id =item.id_file}))'">
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.detalles)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.propietario)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.reg_date)
+                </td>           
+            </tr>
+        }
+    </table>
+    <a href="@Url.Action("ExportExcelShare", "Documents", new {  findString = ViewBag.findString })" class="float-left">
+        <span>
+            Exportar a Excel
+        </span>
+    </a>
+    <hr />
+    <p class="text-center">Página @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) de @Model.PageCount</p>
+    <br />
+    <nav>
+        <ul class="pagination justify-content-center">
+            @Html.PagedListPager(
+        Model,
+        page => Url.Action("shared",
+        new
+        {
+            page,
+            findString = ViewBag.findString
+        }
+        ),
+        new PagedListRenderOptions()
+        {
+            LinkToFirstPageFormat = "<<",
+            LinkToPreviousPageFormat = "Anterior",
+            LinkToNextPageFormat = "Siuiente",
+            LinkToLastPageFormat = ">>",
+            DisplayEllipsesWhenNotShowingAllPageNumbers = false,
+            LiElementClasses = new List<string> { "page-item", "page-link" }
+        })
+        </ul>
+    </nav>
+
+    <br />
+    <br />
+</div>
+
+

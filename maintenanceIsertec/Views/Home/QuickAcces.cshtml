@@ -1,0 +1,29 @@
+﻿<h5 class="text-muted">Mis Accesos Rápidos</h5>
+<div class="row">
+    <div class="col-lg-6 col-sm-6">
+        <div class="card-box bg-blue">
+
+            <div class="inner">
+                <h3>@ViewBag.assign </h3>
+                <p>Mis Suscripciones </p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-tools" aria-hidden="true"></i>
+            </div>
+            @Html.ActionLink("Ver configuraciones", "list", "Schedulings", null, new { @class = "card-box-footer" })
+        </div>
+    </div>
+    <div class="col-lg-6 col-sm-6">
+        <div class="card-box bg-orange">
+            <div class="inner">
+                <h3> @ViewBag.service </h3>
+                <p> Documentos Recientes </p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-file-signature" aria-hidden="true"></i>
+            </div>
+            @Html.ActionLink("Ver Documentos recientes", "list", "ServiceCall", new { pageSize = 20 }, new { @class = "card-box-footer" })
+        </div>
+    </div>
+
+</div>

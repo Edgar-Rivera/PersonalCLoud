@@ -1,0 +1,21 @@
+﻿@model maintenanceIsertec.Models.SiteUser
+@{
+    ViewBag.Title = "Isertec - Iniciar Sesión";
+    Layout = "~/Views/Shared/partialLogin.cshtml";
+}
+<div class="bg-img" style="background-image: url(/Content/Images/bg-2.jpg)">
+    @using (Html.BeginForm("Login", "Login", FormMethod.Post, new { @class = "container" }))
+    {
+        <img src="https://www.isertec.com/storage/images/contents/5af4cdc8f31e5_.svg" width="200" height="60" alt="isericon" class="image-logon">
+        <div class="input-container">
+            <i class="fa fa-user icon"></i>
+            @Html.TextBoxFor(model => Model.UserName, new { @class = "form-input", @placeholder = "Usuario", @required = true })
+        </div>
+        <div class="input-container">
+            <i class="fa fa-lock icon"></i>
+            @Html.TextBoxFor(model => Model.Password, new { @class = "input", @placeholder = "Contraseña", @required = true, @type = "password" })
+        </div>
+        @Html.ValidationSummary(true, "", new { id = "unsafe" })
+        <button type="submit" class="btn">Iniciar Sesión</button>
+    }
+</div>

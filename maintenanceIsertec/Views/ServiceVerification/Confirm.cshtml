@@ -1,0 +1,58 @@
+﻿@using maintenanceIsertec.Models.Consult
+@{
+    ViewBag.Title = "Confirmación de Servicio";
+    Layout = "~/Views/Shared/partialLogin.cshtml";
+}
+<style>
+    @@media (max-width: 415px) {
+        .containerConfirm {
+            width: 350px;
+        }
+    }
+
+    @@media (max-width: 360px) {
+        .containerConfirm {
+            width: 300px;
+        }
+    }
+</style>
+
+<div class="bg-img" style="background-image: url(/Content/Images/bg-2.jpg)">
+    <div class="containerConfirm">
+        <img src="https://www.isertec.com/storage/images/contents/5af4cdc8f31e5_.svg" width="200" height="60" alt="isericon" class="image-logon">
+        <h3 style="text-align:center">Confirmación de Servicio</h3>
+        <hr />
+        @foreach (List itemHeader in ViewBag.header)
+        {
+            <b>Orden de Trabajo: </b> <label> @string.Concat(itemHeader.DocNum, "-", itemHeader.Line)</label><br />
+            <b>Tratado por:</b> @itemHeader.U_NAME<br />
+            <b>Equipo:</b> @itemHeader.itemName<br />
+            <b>Rutina aplicada:</b> @itemHeader.U_RutinaMantenimiento<br />
+            <b>Fecha Realización:</b> @itemHeader.EndDate.ToShortDateString()
+            <br />
+            <br />
+
+        }
+        @if (ViewBag.setParamStyle == "Y")
+        {
+            <div style="background-color:#4CAF50;padding:10px;color:white; border-radius:5px;">
+                @ViewBag.msg
+            </div>
+        }
+        else
+        {
+            <div>
+                @ViewBag.msg
+            </div>
+        }
+
+        <div style="text-align:center">
+            <br />
+            &copy; @DateTime.Now.Year - Isertec, S.A. <br />
+            <a href="https://www.isertec.com">www.isertec.com</a>
+        </div>
+    </div>
+</div>
+
+
+

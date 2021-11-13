@@ -1,0 +1,245 @@
+﻿@model IEnumerable<maintenanceIsertec.Models.ServiceCalls.Details>
+@using maintenanceIsertec.Models.ServiceCalls
+@{
+
+    ViewBag.Title = "Llamada de Servicio";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    double totalMantenimientos = 0;   // Values for progress bar - Count from model
+    double finalizados = 0;
+    double programados = 0;
+    double general = 0;
+    double canceladoCliente = 0;
+    double canceladoIsertec = 0;
+    double paramView = 0;
+    double emergencias = 0;
+    string DocNum = string.Empty;
+}
+<div class="container">
+    @foreach (var item in Model)
+    {
+        DocNum = item.DocNum;
+        if (item.Series == "80")
+        {
+            <span class="badge badge-primary float-right">Redes y Aplicaciones</span>
+        }
+        else
+        {
+            <span class="badge badge-success float-right">Energia y Aplicaciones</span>
+        }
+        <h4>Llamada de Servicio</h4>
+        <hr />
+
+        <fieldset disabled>
+            <div class="form-group row">
+                <div class="col-sm-8">
+                    <strong><label class="control-label">Número de llamada </label></strong>
+                    <input type="text" class="form-control" value="@item.DocNum" readonly>
+                </div>
+                <div class="col-sm-4">
+                    <strong><label class="control-label" style="text-align:center">Prioridad</label></strong>
+                    <input type="text" class="form-control" value="@item.priority" readonly>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-8">
+                    <strong><label class="control-label">Descripción </label></strong>
+                    <input type="text" class="form-control" value="@item.subject" readonly>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-8">
+                    <strong><label class="control-label">Nombre del Cliente </label></strong>
+                    <input type="text" class="form-control" value="@item.custmrName" readonly>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-4">
+                    <strong><label class="control-label">Fecha Creación </label></strong>
+                    <input type="text" class="form-control" value="@item.createDate.ToShortDateString()" readonly>
+                </div>
+                <div class="col-sm-4">
+                    <strong><label class="control-label">Número de Contrato </label></strong>
+                    <input type="text" class="form-control" value="@item.contractID" readonly>
+                </div>
+            </div>
+            <br />
+            <h4>Información del Equipo</h4>
+            <hr />
+            <div class="form-group row">
+                <div class="col-sm-8">
+                    <strong><label class="control-label">Descripción </label></strong>
+                    <input type="text" class="form-control" value="@item.itemName" readonly>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-4">
+                    <strong><label class="control-label">Código del Articulo </label></strong>
+                    <input type="text" class="form-control" value="@item.itemCode" readonly>
+                </div>
+                <div class="col-sm-4">
+                    <strong><label class="control-label">Número de Serie </label></strong>
+                    <input type="text" class="form-control" value="@item.manufSN" readonly>
+                </div>
+            </div>
+        </fieldset>
+    }
+    <br />
+    <h4>Mantenimientos Programados / Realizados</h4>
+    <hr />
+    <table class="table table-responsive-sm table-hover">
+        <thead class="thead-dark text-center">
+            <tr>
+                <th>
+                    Número de Ticket
+                </th>
+                <th>
+                    Técnico Asignado
+                </th>
+                <th>
+                    Fecha Inicio
+                </th>
+
+                <th>
+                    Fecha Fin
+                </th>
+
+                <th>
+                    Rutina de Equipo
+                </th>
+                <th>
+                    Rutina Aplicada
+                </th>
+                <th>
+                    Estado
+                </th>
+            </tr>
+        </thead>
+        @foreach (Scheduling ticket in ViewBag.schedullings)
+        {
+
+            <tr style="cursor:pointer !important" onclick="location.href = '@(Url.Action(ticket.Equipo.Replace(" ", ""), "Consult", new { callID = ticket.SrcvCallID, Line = ticket.Line, DocNum = DocNum }))'">
+                <td>
+                    @ticket.Line
+                </td>
+                <td>
+                    @ticket.U_NAME
+                </td>
+                <td>
+                    @ticket.StartDate.ToShortDateString()
+                </td>
+                <td>
+                    @ticket.EndDate.ToShortDateString()
+                </td>
+                <td>
+                    @if (ticket.Equipo == "Atención de Emergencia" || ticket.Equipo == "Atención de Emergencia RA")
+                    {
+                        <span class="badge badge-danger">@ticket.Equipo</span>
+                    }
+                    else if (ticket.Equipo == "Atención General" || ticket.Equipo == "Atención General RA")
+                    {
+                        <span class="badge badge-warning">@ticket.Equipo</span>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => ticket.Equipo)
+                    }
+                </td>
+                <td>
+                    @ticket.U_RutinaMantenimiento
+                </td>
+                <td>
+
+                    @{
+                        if (ticket.Estado == "Finalizado")
+                        {
+                            <span class="badge badge-success"> @ticket.Estado</span>
+                        }
+                        else if (ticket.Estado == "En proceso")
+                        {
+                            <span class="badge badge-warning"> @ticket.Estado</span>
+                        }
+                        else if (ticket.Estado == "Cancelado - Cliente")
+                        {
+                            canceladoCliente++;
+                            <span class="badge badge-danger"> @ticket.Estado</span>
+                        }
+                        else if (ticket.Estado == "Cancelado - Isertec")
+                        {
+                            canceladoIsertec++;
+                            <span class="badge badge-danger"> @ticket.Estado</span>
+                        }
+                    }
+                </td>
+            </tr>
+            if (ticket.Equipo == "Atención de Emergencia" || ticket.Equipo == "Atención de Emergencia RA")
+            {
+                emergencias++;
+            }
+            else if (ticket.Equipo == "Atención General" || ticket.Equipo == "Atención General RA")
+            {
+                general++;
+            }
+            else
+            {
+                totalMantenimientos++;
+                if (ticket.Estado == "Finalizado")
+                {
+                    finalizados++;
+                }
+                else if (ticket.Estado == "En proceso")
+                {
+                    programados++;
+                }
+            }
+        }
+
+    </table>
+    <br />
+    <h4>Resumen Mantenimientos</h4>
+    <hr />
+    <fieldset disabled>
+        <div class="form-group row">
+            <div class="col-sm-4">
+                <strong><label class="control-label">Total Mantenimientos </label></strong>
+                <input type="text" class="form-control" value="@totalMantenimientos" readonly>
+            </div>
+            <div class="col-sm-4">
+                <strong><label class="control-label">Mantenimientos Finalizados </label></strong>
+                <input type="text" class="form-control" value="@finalizados" readonly>
+            </div>
+            <div class="col-sm-4">
+                <strong><label class="control-label">Atención de Emergencias </label></strong>
+                <input type="text" class="form-control" value="@emergencias" readonly>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-4">
+                <strong><label class="control-label">Atención General </label></strong>
+                <input type="text" class="form-control" value="@general" readonly>
+            </div>
+            <div class="col-sm-4">
+                <strong><label class="control-label">Cancelados - Cliente </label></strong>
+                <input type="text" class="form-control" value="@canceladoCliente" readonly>
+            </div>
+            <div class="col-sm-4">
+                <strong><label class="control-label">Canceladso Isertec </label></strong>
+                <input type="text" class="form-control" value="@canceladoIsertec" readonly>
+            </div>
+
+        </div>
+    </fieldset>
+    @{
+        paramView = Math.Round((finalizados * 100) / totalMantenimientos, 2);
+        paramView = paramView == 0 ? 0 : paramView;
+    }
+    <h5>Progreso</h5>
+    <hr />
+    <div class="progress" style="height: 35px;">
+        <div class="progress-bar bg-success" role="progressbar" style="width: @string.Concat(paramView.ToString(),"%")" aria-valuenow=@paramView aria-valuemin="0" aria-valuemax=@totalMantenimientos>@string.Concat(paramView.ToString(), "%")</div>
+    </div>
+    <br />
+    <br />
+</div>

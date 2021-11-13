@@ -1,0 +1,22 @@
+﻿@{
+    ViewBag.Title = "Confirmacion Servicio";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container">
+    <div class="our-skills">
+        <div class="card" style="border:none !important">
+            <div class="box-shadow">
+                <h4 class="text-center">La confirmacion se ha enviado con éxito!</h4>
+                <hr />
+                <br />
+                <div class="form-row">
+                    <div class="col-sm-12">
+                        <p> <label>Se ha enviado la orden de trabajo<strong> @string.Concat(ViewBag.DocNum, "-", ViewBag.Line) </strong> a: <strong>@ViewBag.Email</strong></label> <br /></p>
+                        <p>El cliente recibirá un correo electrónico con los detalles de la Orden de Trabajo adjunta, dentro del mismo correo electrónico encontrará un botón que le permitira confirmar el servicio / mantenimiento mediante el servicio web</p>
+                        @Html.ActionLink("Ir a mis OT's", "list", "Schedulings", new { @class = "btn btn-second" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,2575 @@
+﻿@model IEnumerable<maintenanceIsertec.Models.AC.AC_RD_RP>
+@using maintenanceIsertec.Models.Consult
+@{
+    ViewBag.Title = "AC APC RD-RP Series";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script type='text/javascript'>
+    function contractInformation() {
+        if ((document.getElementById('contract').value != "")) {
+            $('#ModalContract').modal('show');
+        }
+    }
+</script>
+@{
+
+
+    int contractID = 0;
+}
+<div class="container">
+    @foreach (List itemHeader in ViewBag.header)
+    {
+        contractID = itemHeader.contractID;
+        <span class="badge badge-success float-left">Energía y Aplicaciones</span>
+        <br />
+        if (itemHeader.Close == "Y")
+        {
+            <span class="badge badge-success float-right">Finalizado - Cerrado</span>
+        }
+        else
+        {
+
+            <span class="badge badge-danger float-right">Finalizado</span>
+        }
+
+        <h4>Network Air - Mantenimiento Preventivo A/C APC RD-RP Series</h4>
+        <h4>Lista de Control – Mantenimiento para Solución de Enfriamiento</h4>
+        <hr />
+        <h4>Detalles del Equipo / Sitio</h4>
+
+        <div class="form-group row">
+            <div class="col-sm-4">
+                <strong><label class="control-label">Orden de Trabajo </label></strong>
+                <input type="text" class="form-control" value="@string.Concat(itemHeader.DocNum,"-",itemHeader.Line)" readonly>
+            </div>
+            @if (itemHeader.contractID > 0)
+            {
+                <div class="col-sm-4">
+                    <strong><label class="control-label">No. Contrato </label></strong>
+                    <div class="input-group">
+                        <input type="text" class="form-control" value="@itemHeader.contractID" id="contract" readonly>
+                        <button class="btn btn-primary" type="button" onclick="contractInformation()"><i class="fas fa-eye"></i></button>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="col-sm-4">
+                    <strong><label class="control-label">No. Contrato </label></strong>
+                    <div class="input-group">
+                        <input type="text" class="form-control" value="N/A" id="contract" readonly>
+                        <button class="btn btn-primary" type="button" onclick="contractInformation()" disabled><i class="fas fa-eye"></i></button>
+                    </div>
+                </div>
+            }
+        </div>
+        <fieldset disabled>
+            <div class="form-group row">
+                <div class="col-sm-4">
+                    <strong><label class="control-label">Nombre del Cliente </label></strong>
+                    <input type="text" class="form-control" value="@itemHeader.custmrName">
+                </div>
+                <div class="col-sm-4">
+                    <strong><label class="control-label">Dirección </label></strong>
+                    <input type="text" class="form-control" value="@itemHeader.Address">
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-8">
+                    <strong><label class="control-label">Descripción de la Unidad de Energia </label></strong>
+                    <input type="text" class="form-control" value="@itemHeader.itemName">
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-4">
+                    <strong><label class="control-label">Código Artículo </label></strong>
+                    <input type="text" class="form-control" value="@itemHeader.itemCode">
+                </div>
+                <div class="col-sm-4">
+                    <strong><label class="control-label">Número de Serie </label></strong>
+                    <input type="text" class="form-control" value="@itemHeader.manufSN">
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-4">
+                    <strong><label class="control-label">Rutina de Mantenimiento aplicada </label></strong>
+                    <input type="text" class="form-control" value="@itemHeader.U_RutinaMantenimiento">
+                </div>
+                <div class="col-sm-4">
+                    <strong><label class="control-label">Tratado por </label></strong>
+                    <input type="text" class="form-control" value="@itemHeader.U_NAME">
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-4">
+                    <strong><label class="control-label">Hora Inicio </label></strong>
+                    <input type="text" class="form-control" value="@itemHeader.StartTime">
+                </div>
+                <div class="col-sm-4">
+                    <strong><label class="control-label">Hora Fin </label></strong>
+                    <input type="text" class="form-control" value="@itemHeader.EndTime">
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-8">
+                    <strong><label class="control-label">Datos Adicionales </label></strong>
+                    <input type="text" class="form-control" value="@itemHeader.U_DatosAdicionales">
+                </div>
+            </div>
+        </fieldset>
+        <br />
+    }
+    @foreach (var item in Model)
+    {
+        <h4>Pre-Rutina</h4>
+        <hr />
+        <h3>Sistema contra incendios</h3>
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">1. ¿El sistema de detección y supresión de incendios se encuentra desactivado? </label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S1_P1 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "NA", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else if (item.U_S1_P1 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "NA", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "NA", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">2. ¿El cliente autoriza mantenimiento? </label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S1_P2 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "NA", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else if (item.U_S1_P2 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "NA", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "NA", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <h3>Evaporador</h3>
+        <hr />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">1. Estado de evaporador </label>
+                <input value="@item.U_S2_P1" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">2. Estado de ventiladores </label>
+                <input value="@item.U_S2_P2" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">3. Aislamiento </label>
+                <input value="@item.U_S2_P3" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">4. Limpieza Filtros </label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S2_P4 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S2_P4 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">5. Limpieza interna </label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S2_P5 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S2_P5 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">6. Limpieza externa </label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S2_P6 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S2_P6 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">7. Limpieza de drenaje </label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S2_P7 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S2_P7 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">8. Fugas aceite </label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S2_P8 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S2_P8 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">9. Vibracion </label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S2_P9 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S2_P9 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">10. Revision fisica de componentes internos </label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S2_P10 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S2_P10 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <h4>Condensador</h4>
+        <hr />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">1. Estado condensador </label>
+                <input value="@item.U_S3_P1" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">2. Estado de ventilador </label>
+                <input value="@item.U_S3_P2" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">1. Limpieza serpentin </label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S3_P3 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S3_P3 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">4. Limpieza interna </label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S3_P4 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S3_P4 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">5. Limpieza externa  </label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S3_P5 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S3_P5 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">6. Revision de aspas </label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S3_P6 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S3_P6 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">7. Fugas </label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S3_P7 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S3_P7 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">8. Vibración </label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S3_P8 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S3_P8 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <h4>Circuito de Refrigeración</h4>
+        <hr />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">1. Alta presión (PSI) </label>
+                <input value="@item.U_S4_P1" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">2. Baja presión (PSI) </label>
+                <input value="@item.U_S4_P2" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">3. Estado circuito refrigeracion </label>
+                <input value="@item.U_S4_P3" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">4. Aislamiento </label>
+                <input value="@item.U_S4_P4" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">5. Visor de liquido lleno </label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S4_P5 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S4_P5 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">6. Revision de presostatos </label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S4_P6 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S4_P6 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">7. Revision de presion en display </label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S4_P7 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S4_P7 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">8. Revision de presion manometros </label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S4_P8 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S4_P8 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">9. Fugas de refrigerante </label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S4_P9 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S4_P9 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <h4>Run Hours</h4>
+        <hr />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">1. Filtros </label>
+                <input value="@item.U_S5_P1" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">2. Ventilador evaporadores </label>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-sm-3">
+                <input value="@item.U_S5_P2_1" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-3">
+                <input value="@item.U_S5_P2_2" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-3">
+                <input value="@item.U_S5_P2_3" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">3. Heaters </label>
+                <input value="@item.U_S5_P3" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">4. Bomba condensado </label>
+                <input value="@item.U_S5_P4" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">5. Humificador </label>
+                <input value="@item.U_S5_P5" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">6. Compresor </label>
+                <input value="@item.U_S5_P6" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">7. Fuentes de poder</label>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-sm-3">
+                <input value="@item.U_S5_P7_1" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-3">
+                <input value="@item.U_S5_P7_2" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <43>Settings</43>
+        <hr />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">1. Temperatura </label>
+                <input value="@item.U_S6_P1" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">2. Humedad </label>
+                <input value="@item.U_S6_P2" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <h4>Threshold</h4>
+        <hr />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">1. Threshold Rack Inlet </label>
+                <input value="@item.U_S7_P1" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">2. Threshold Supply Air </label>
+                <input value="@item.U_S7_P2" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">3. Threshold Return Air </label>
+                <input value="@item.U_S7_P3" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">4. High humid </label>
+                <input value="@item.U_S7_P4" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">5. Low humid </label>
+                <input value="@item.U_S7_P5" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">6. Group Type </label>
+                <input value="@item.U_S7_P6" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">7. Firmware version </label>
+                <input value="@item.U_S7_P7" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <h4>Prueba de componentes de evaporador y condensador</h4>
+        <hr />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">1. Compresor</label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S8_P1 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S8_P1 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">2. Humificador</label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S8_P2 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S8_P2 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">3. Reheat</label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S8_P3 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S8_P3 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">4. Bomba de condensado</label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S8_P4 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S8_P4 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">5. Fuentes de poder</label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S8_P5 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S8_P5 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">6. Ventiladores evaporador</label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S8_P6 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S8_P6 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">6. Ventiladores Condensador</label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S8_P7 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S8_P7 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <h4>Circuito de agua potable</h4>
+        <hr />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">1. Revision y limpieza</label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S9_P1 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S9_P1 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">2. Fugas</label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S9_P2 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S9_P2 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <h4>Sistema de drenaje</h4>
+        <hr />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">1. Revision y limpieza de bandeja</label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S10_P1 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S10_P1 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">2. Revision y limpieza de bomba</label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S10_P2 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S10_P2 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <h4>Mediciones eléctricas</h4>
+        <hr />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">1. Voltaje evaporador</label>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-sm-3">
+                <input value="@item.U_S11_P1_1" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-3">
+                <input value="@item.U_S11_P1_2" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-3">
+                <input value="@item.U_S11_P1_3" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">2. Amperaje tota evaporador</label>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-sm-3">
+                <input value="@item.U_S11_P2_1" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-3">
+                <input value="@item.U_S11_P2_2" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-3">
+                <input value="@item.U_S11_P2_3" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">3. Amperaje fan 1</label>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-sm-3">
+                <input value="@item.U_S11_P3_1" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-3">
+                <input value="@item.U_S11_P3_2" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-3">
+                <input value="@item.U_S11_P3_3" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">4. Amperaje fan 2</label>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-sm-3">
+                <input value="@item.U_S11_P4_1" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-3">
+                <input value="@item.U_S11_P4_2" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-3">
+                <input value="@item.U_S11_P4_3" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+
+
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">5. Amperaje compresor</label>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-sm-3">
+                <input value="@item.U_S11_P5_1" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-3">
+                <input value="@item.U_S11_P5_2" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-3">
+                <input value="@item.U_S11_P5_3" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+
+
+
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">6. Amperaje reheat 1</label>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-sm-3">
+                <input value="@item.U_S11_P6_1" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-3">
+                <input value="@item.U_S11_P6_2" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-3">
+                <input value="@item.U_S11_P6_3" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">7. Amperaje reheat 2</label>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-sm-3">
+                <input value="@item.U_S11_P7_1" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-3">
+                <input value="@item.U_S11_P7_2" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-3">
+                <input value="@item.U_S11_P7_3" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">8. Amperaje humificador</label>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-sm-3">
+                <input value="@item.U_S11_P7_3" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-3">
+                <input value="@item.U_S11_P7_3" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-3">
+                <input value="@item.U_S11_P7_3" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">9. Voltaje condensadora</label>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-sm-3">
+                <input value="@item.U_S11_P9_1" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-3">
+                <input value="@item.U_S11_P9_2" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-3">
+                <input value="@item.U_S11_P9_3" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+
+
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">10. Amperaje ventilador condensadora</label>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-sm-3">
+                <input value="@item.U_S11_P10_1" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-3">
+                <input value="@item.U_S11_P10_2" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-3">
+                <input value="@item.U_S11_P10_3" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+
+
+        <h4>Revisión y apriete de componentes evaporador</h4>
+        <hr />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">1. Conectores</label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S12_P1 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S12_P1 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">2. Breaker</label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S12_P2 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S12_P2 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">3. Seccionadores</label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S12_P3 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S12_P3 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <h4>Revisión y apriete de componentes condensador</h4>
+        <hr />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">1. Conectores</label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S13_P1 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S13_P1 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">2. Breaker</label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S13_P2 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S13_P2 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">3. Seccionadores</label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S13_P3 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S13_P3 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        if (item.U_Rutina == "R4")
+        {
+            <h4>Revisión y apriete de borners en tableros y equipos</h4>
+            <hr />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">1. Acometida de evaporador</label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            @if (item.U_S14_P1 == "Si")
+                            {
+                                <label class="btn btn-outline-secondary">
+                                    @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                                </label>
+                                <label class="btn btn-outline-secondary">
+                                    @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                                </label>
+                                <label class="btn btn-outline-secondary">
+                                    @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                                </label>
+
+                            }
+                            else if (item.U_S14_P1 == "No")
+                            {
+                                <label class="btn btn-outline-secondary">
+                                    @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                                </label>
+                                <label class="btn btn-outline-secondary">
+                                    @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                                </label>
+                                <label class="btn btn-outline-secondary">
+                                    @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                                </label>
+                            }
+                            else
+                            {
+                                <label class="btn btn-outline-secondary">
+                                    @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                                </label>
+                                <label class="btn btn-outline-secondary">
+                                    @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                                </label>
+                                <label class="btn btn-outline-secondary">
+                                    @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                                </label>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">2. Acometida de condensador</label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            @if (item.U_S14_P2 == "Si")
+                            {
+                                <label class="btn btn-outline-secondary">
+                                    @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                                </label>
+                                <label class="btn btn-outline-secondary">
+                                    @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                                </label>
+                                <label class="btn btn-outline-secondary">
+                                    @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                                </label>
+
+                            }
+                            else if (item.U_S14_P2 == "No")
+                            {
+                                <label class="btn btn-outline-secondary">
+                                    @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                                </label>
+                                <label class="btn btn-outline-secondary">
+                                    @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                                </label>
+                                <label class="btn btn-outline-secondary">
+                                    @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                                </label>
+                            }
+                            else
+                            {
+                                <label class="btn btn-outline-secondary">
+                                    @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                                </label>
+                                <label class="btn btn-outline-secondary">
+                                    @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                                </label>
+                                <label class="btn btn-outline-secondary">
+                                    @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                                </label>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+        }
+        <h4>Registro de alarmas y eventos</h4>
+        <hr />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">1. ¿El sistema de supresión de incendios se encuentra activado? </label>
+                <div class="card">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @if (item.U_S15_P1 == "Si")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+
+                        }
+                        else if (item.U_S15_P1 == "No")
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled" }) N/A
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @disabled = "disabled" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @disabled = "disabled" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBox("DP", "NT", new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @disabled = "disabled", @checked = "checked" }) N/A
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <h4>Observaciones</h4>
+        <hr />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <input value="@item.U_S16_P1" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">Correo(s) electrónico al cual se envio la confirmación </label>
+                <input value="@item.U_correo" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        @Html.ActionLink("Regresar", "list", "Consult", new { @class = "btn btn-secondary" })
+        @Html.ActionLink("Descargar OT", "ACAPCRDRPSeries", "Report", new
+       {
+           callID = item.U_ServiceCallID,
+           Line = item.U_Linea,
+           DocNum = item.U_DocNum
+        },
+       new { @class = "btn btn btn-second", @style = "float:right" })
+        @Html.ActionLink("Reenviar OT", "updateServiceCallMail", "Report", new
+    {
+        callID = item.U_ServiceCallID,
+        Line = item.U_Linea,
+        typeService = "AC_APC_RD_RP_SERIES",
+        DocEntry = item.DocEntry
+    },
+    new { @class = "btn btn-primary mr-1 ", @type = "button", @style = "float:right" })
+        <br />
+    }
+    <br />
+    <br />
+    <br />
+    @{
+        var data = new maintenanceIsertec.Connection.Contracts.DataContracts().getDetails(contractID);
+
+        <div class="modal fade" id="ModalContract" tabindex="-1" role="dialog" aria-labelledby="ModalContract" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="text-center modal-title" id="ModalContract">Cobertura del Contrato</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <fieldset disabled>
+                            <div class="form-group row">
+                                <div class="col-sm-12">
+                                    <strong><label class="control-label">No. Contrato </label></strong>
+                                    <input type="text" class="form-control" value="@data.ContractID">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-12">
+                                    <strong><label class="control-label">Tratado por </label></strong>
+                                    <input type="text" class="form-control" value="@data.U_NAME">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-6">
+                                    <strong><label class="control-label">Número de OV </label></strong>
+                                    <input type="text" class="form-control" value="@data.U_numeroOV">
+                                </div>
+                                <div class="col-sm-6">
+                                    <strong><label class="control-label">Tipo Contrato </label></strong>
+                                    <input type="text" class="form-control" value="@data.Tipos">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-12">
+                                    <strong><label class="control-label">Cobertura </label></strong>
+                                    <textarea rows="5" type="text" class="form-control">@data.Remarks1</textarea>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    <div class="modal-footer">
+                        @Html.ActionLink("Detalles", "details", "Contracts", new
+                   {
+                       id = data.ContractID
+                   }, new { @class = "btn btn-primary" })
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+</div>

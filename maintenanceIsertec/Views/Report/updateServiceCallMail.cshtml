@@ -1,0 +1,63 @@
+﻿@using maintenanceIsertec.Models.Consult
+@{
+    ViewBag.Title = "Enviar Confirmación de Servicio";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container">
+    @using (Html.BeginForm("updateMail", "Report", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        foreach (List itemHeader in ViewBag.header)
+        {
+            <div id="hiddenElementE">
+                <div class="our-skills">
+                    <div class="card" style="border:none !important">
+                        <div class="box-shadow">
+                            <h4 class="text-center">  Confirmación de Servicio</h4>
+                            <hr />
+                            <div class="col-sm-4" style="display:none">
+                                <label class="control-label">Cliente:</label>
+                                <input value="@itemHeader.custmrName" name="Customer" class="form-control" readonly />
+                            </div>
+                            <div class="col-sm-4" style="display:none">
+                                <label class="control-label">DocEntry:</label>
+                                <input value="@ViewBag.DocEntry" name="DocEntry" class="form-control" readonly />
+                            </div>
+                            <div class="col-sm-4" style="display:none">
+                                <label class="control-label">Número de ticket:</label>
+                                <input value="@itemHeader.Line" name="Line" class="form-control" readonly />
+                            </div>
+                            <div class="col-sm-4" style="display:none">
+                                <label class="control-label">Número de ticket:</label>
+                                <input value="@itemHeader.callID" name="CallID" class="form-control" readonly />
+                            </div>
+                            <div class="col-sm-4" style="display:none">
+                                <label class="control-label">Número de ticket:</label>
+                                <input value="@itemHeader.DocNum" name="DocNum" class="form-control" readonly />
+                            </div>
+                            <div class="col-sm-4" style="display:none">
+                                <label class="control-label">Rutina aplicada:</label>
+                                <input value="@ViewBag.typeService" name="typeService" class="form-control" readonly />
+                            </div>
+                            <div class="form-row">
+                                <label>
+                                    La orden de trabajo <strong> @string.Concat(itemHeader.DocNum, "-", itemHeader.Line) </strong>  ha sido finalizada previamente,
+                                    utilice unicamente esta opcion para enviar nuevamente el link de confirmación y la orden de trabajo adjunta al cliente
+                                </label> <br />
+                                <label class="control-label">Ingrese correo electrónico para enviar la confirmación:</label><br />
+                            </div>
+                            <div class="form-row">
+                                <div class="col-sm-12">
+                                    <input name="emailUpdate" class="form-control" maxlength="150" type="email" multiple required />
+                                </div>
+                            </div><br />
+                            <input style="float:right" type="submit" value="Enviar Confirmación" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+
+</div>
+

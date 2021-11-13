@@ -1,0 +1,112 @@
+﻿@model PagedList.IPagedList<maintenanceIsertec.Models.Scheduling.userSchedulings>
+@using PagedList.Mvc;
+@using maintenanceIsertec.Connection.Consult
+@{
+    ViewBag.Title = "Ordenes de Trabajo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container">
+    <h4>Ordenes de Trabajo <span class="badge badge-secondary">@Model.TotalItemCount</span></h4>
+    <hr />
+    @using (Html.BeginForm("list", "Schedulings", FormMethod.Get))
+    {
+        <div class="input-group mb-3">
+            <br />
+            <input type="text" class="form-control" placeholder="Buscar...." name="findString" aria-describedby="basic-addon2" required>
+            <div class="input-group-append">
+                <input type="submit" class="btn btn-success" value="Buscar" />
+                <button class="btn btn-primary bi bi-funnel-fill" type="button" data-toggle="collapse" data-target="#collapseFilters" aria-expanded="false" aria-controls="collapseFilters"><i class="fas fa-filter"></i></button>
+            </div>
+        </div>
+    }
+    @foreach (var item in Model)
+    {
+        <div class="our-skills">
+            <div class="card" style="border:none !important">
+                <div class="box-shadow">
+                    @if (item.Equipo == "Atención de Emergencia")
+                    {
+                        <span class="badge badge-danger float-right">Atención Emergencia</span>
+                    }
+                    else if (item.Equipo == "Atención General")
+                    {
+                        <span class="badge badge-warning float-right">Atención General</span>
+                    }
+                    else
+                    {
+                        <span class="badge badge-secondary float-right">Programado</span>
+                    }
+                    <h5>Orden de Trabajo: @string.Concat(item.DocNum, "-", item.Line)</h5>
+                    <hr />
+                    <label><strong>Cliente: </strong> <label> @item.custmrName</label></label><br />
+                    <label><strong>Equipo: </strong><label> @item.itemName</label></label><br />
+                    <label><strong>Número de Serie: </strong><label> @item.manufSN</label></label>
+                    <br />
+                    <br />
+                    <h5>Detalles de Orden de Trabajo</h5>
+                    <hr />
+                    <label><strong>Asignado a: </strong> <label> @Session["nombre"]</label></label><br />
+                    <label><strong>Fecha Inicio: </strong> <label> @item.StartDate.ToShortDateString()</label></label><br />
+                    <label><strong>Dirección: </strong> <label>@item.Address</label></label><br />
+                    <label><strong>Rutina de Equipo: </strong> <label> @item.Equipo</label></label><br />
+                    @if (item.U_RutinaMantenimiento == "R1")
+                    {
+                        <label><strong>Rutina de Mantenimiento: </strong> <label>Rutina 1</label></label><br />
+                    }
+                    else if (item.U_RutinaMantenimiento == "R2")
+                    {
+                        <label><strong>Rutina de Mantenimiento: </strong> <label>Rutina 2</label></label><br />
+
+                    }
+                    else if (item.U_RutinaMantenimiento == "R3")
+                    {
+                        <label><strong>Rutina de Mantenimiento: </strong> <label>Rutina 3</label></label><br />
+
+                    }
+                    else if (item.U_RutinaMantenimiento == "R4")
+                    {
+
+                        <label><strong>Rutina de Mantenimiento: </strong> <label>Rutina 4</label></label><br />
+                    }
+                    else if (item.U_RutinaMantenimiento == "NA")
+                    {
+                        <label><strong>Rutina de Mantenimiento: </strong> <label>No Aplica</label></label><br />
+                    }
+
+                    @Html.ActionLink("Iniciar Rutina", item.Equipo.Replace(" ", ""), "Schedulings", new
+                      {
+                          callID = item.callID,
+                          Line = item.Line
+                      }, new { @class = "btn btn-success" })
+
+                </div>
+            </div>
+        </div>
+    }
+    <hr />
+    <p class="text-center">Página @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) de @Model.PageCount</p>
+    <br />
+    <nav>
+        <ul class="pagination justify-content-center">
+            @Html.PagedListPager(
+        Model,
+        page => Url.Action("list",
+        new
+        {
+            page,
+            findString = ViewBag.findString
+        }
+        ),
+        new PagedListRenderOptions()
+        {
+            LinkToFirstPageFormat = "<<",
+            LinkToPreviousPageFormat = "Anterior",
+            LinkToNextPageFormat = "Siuiente",
+            LinkToLastPageFormat = ">>",
+            DisplayEllipsesWhenNotShowingAllPageNumbers = false,
+            LiElementClasses = new List<string> { "page-item", "page-link" }
+        })
+        </ul>
+    </nav>
+</div>
+<br />

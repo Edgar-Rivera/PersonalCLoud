@@ -1,0 +1,133 @@
+﻿@model PagedList.IPagedList<maintenanceIsertec.Models.Consult.List>
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "Ordenes de Trabajo Finalizadas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container-fluid">
+    <div class="row justify-content-md-center">
+        <div class="col-md-10">
+            <h4>Ordenes de Trabajo Finalizadas <span class="badge badge-secondary">@Model.TotalItemCount</span></h4>
+            <hr />
+
+            @using (Html.BeginForm("list", "Consult", FormMethod.Get))
+            {
+                <div class="input-group mb-3">
+                    <br />
+                    <input type="text" class="form-control" placeholder="Buscar...." name="findString" aria-describedby="basic-addon2" required>
+                    <div class="input-group-append">
+                        <input type="submit" class="btn btn-success" value="Buscar" />
+                        <button class="btn btn-primary bi bi-funnel-fill" type="button" data-toggle="collapse" data-target="#collapseFilters" aria-expanded="false" aria-controls="collapseFilters"><i class="fas fa-filter"></i></button>
+                    </div>
+                </div>
+            }
+            <table class="table table-responsive-sm table-hover">
+                <caption>Ordenes de Trabajo finalizadas</caption>
+                <thead class="thead-dark text-center">
+                    <tr>
+                        <th>
+                            Número OT
+                        </th>
+                        <th>
+                            Cliente
+                        </th>
+                        <th>
+                            Técnico Asignado
+                        </th>
+                        <th>
+                            Fecha Inicio
+                        </th>
+                        <th>
+                            Fecha Fin
+                        </th>
+                        <th>
+                            Rutina de Equipo
+                        </th>
+                        <th>
+                            Estado
+                        </th>
+                        <th>
+                            Verificado
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                @foreach (var item in Model)
+                {
+                    <tr style="cursor:pointer !important" onclick="location.href = '@(Url.Action( item.Equipo.Replace(" ",""), "Consult", new { callID=item.callID, Line = item.Line, DocNum = item.DocNum }))'">
+                        <td>
+                            @string.Concat(item.DocNum, "-", item.Line)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.custmrName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.U_NAME)
+                        </td>
+                        <td>
+                            @item.StartDate.ToShortDateString()
+                        </td>
+                        <td>
+                            @item.EndDate.ToShortDateString()
+                        </td>
+                        <td>
+                            @if (item.Equipo == "Atención de Emergencia" || item.Equipo == "Atención de Emergencia RA")
+                            {
+                                <span class="badge badge-danger">@item.Equipo</span>
+                            }
+                            else if (item.Equipo == "Atención General" || item.Equipo == "Atención General RA")
+                            {
+                                <span class="badge badge-warning">@item.Equipo</span>
+                            }
+                            else
+                            {
+                                @Html.DisplayFor(modelItem => item.Equipo)
+                            }
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Estado)
+                        </td>
+                        <td>
+                            @if (item.U_ClienteVerifica == "Si")
+                            {
+                                <span class="badge badge-success">@item.U_ClienteVerifica</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-danger">@item.U_ClienteVerifica</span>
+                            }
+                        </td>
+
+                    </tr>
+                }
+            </table>
+            <hr />
+            <p class="text-center">Página @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) de @Model.PageCount</p>
+            <br />
+            <nav>
+                <ul class="pagination justify-content-center">
+                    @Html.PagedListPager(
+                Model,
+                page => Url.Action("list",
+                new
+                {
+                    page,
+                    findString = ViewBag.findString
+                }
+                ),
+                new PagedListRenderOptions()
+                {
+                    LinkToFirstPageFormat = "<<",
+                    LinkToPreviousPageFormat = "Anterior",
+                    LinkToNextPageFormat = "Siuiente",
+                    LinkToLastPageFormat = ">>",
+                    DisplayEllipsesWhenNotShowingAllPageNumbers = false,
+                    LiElementClasses = new List<string> { "page-item", "page-link" }
+                })
+                </ul>
+            </nav>
+            <br />
+        </div>
+    </div>
+</div>
+

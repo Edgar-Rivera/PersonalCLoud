@@ -1,0 +1,798 @@
+﻿@model maintenanceIsertec.Models.DSI.DSI
+@using maintenanceIsertec.Models.Consult
+@{
+    ViewBag.Title = "Detección y Supresión de Incendios";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script type='text/javascript'>
+    function showComponentes() {
+        document.getElementById('componentes').style.display = "block";
+    }
+    function hideComponentes() {
+        document.getElementById('componentes').style.display = "none";
+    }
+
+    function confirmationPre() {
+
+        if ((document.getElementById('r1').checked == true | document.getElementById('r2').checked == true | document.getElementById('r3').checked == true)
+            && (document.getElementById('r4').checked == true | document.getElementById('r5').checked == true)) {
+            document.getElementById('preroutine').style.display = "none";
+            document.getElementById('hiddenElement').style.display = "block";
+        } else {
+            $('#myModal').modal('show');
+        }
+    }
+    function backtopre() {
+        document.getElementById('preroutine').style.display = "block";
+        document.getElementById('hiddenElement').style.display = "none";
+        document.getElementById('hiddenElementE').style.display = "none";
+    }
+    function confirmation() {
+        document.getElementById('headerInformation').style.display = "none";
+        document.getElementById('preroutine').style.display = "none";
+        document.getElementById('hiddenElement').style.display = "none";
+        document.getElementById('hiddenElementE').style.display = "block";
+    }
+
+    function onchangeS(seleccion, desplegable) {
+        if (seleccion == "No") {
+            document.getElementById(desplegable).style.display = "block";
+        } else {
+            document.getElementById(desplegable).style.display = "none";
+        }
+
+    }
+    function onchangeT(seleccion, desplegable) {
+        if (seleccion == "Si") {
+            document.getElementById(desplegable).style.display = "block";
+        } else {
+            document.getElementById(desplegable).style.display = "none";
+        }
+
+    }
+    function onchangeC(seleccion, desplegable) {
+        if (seleccion == "Baja Presión") {
+            document.getElementById(desplegable).style.display = "block";
+        } else if (seleccion == "Presión Normal") {
+            document.getElementById(desplegable).style.display = "none";
+        }
+        else if (seleccion == "Sobre Presurizado") {
+            document.getElementById(desplegable).style.display = "block";
+        }
+
+    }
+    function contractInformation() {
+        if ((document.getElementById('contract').value != "")) {
+            $('#ModalContract').modal('show');
+        }
+    }
+</script>
+<div class="container">
+    <div id="headerInformation">
+        <span class="badge badge-success float-left">Energía y Aplicaciones</span>
+        <span class="badge badge-success float-right">Programado</span><br />
+        <h4>Detección y Supresión de Incendios</h4>
+        <h5>Lista de Control – Mantenimiento para Solución DSI</h5>
+        <hr />
+        <h4>Detalles del Equipo / Sitio</h4>
+        @{
+            string rutinaAplicada = string.Empty;
+            int callID = 0;
+            string docNum = string.Empty;
+            string lineNum = string.Empty;
+            int contractID = 0;
+        }
+
+        @foreach (List itemHeader in ViewBag.header)
+        {
+            rutinaAplicada = itemHeader.U_RutinaMantenimiento;
+            docNum = itemHeader.DocNum;
+            callID = itemHeader.callID;
+            lineNum = itemHeader.Line;
+            contractID = itemHeader.contractID;
+
+            <div class="form-group row">
+                <div class="col-sm-4">
+                    <strong><label class="control-label">Orden de Trabajo </label></strong>
+                    <input type="text" class="form-control" value="@string.Concat(itemHeader.DocNum,"-",itemHeader.Line)" readonly>
+                </div>
+                @if (itemHeader.contractID > 0)
+                {
+                    <div class="col-sm-4">
+                        <strong><label class="control-label">No. Contrato </label></strong>
+                        <div class="input-group">
+                            <input type="text" class="form-control" value="@itemHeader.contractID" id="contract" readonly>
+                            <button class="btn btn-primary" type="button" onclick="contractInformation()"><i class="fas fa-eye"></i></button>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-sm-4">
+                        <strong><label class="control-label">No. Contrato </label></strong>
+                        <div class="input-group">
+                            <input type="text" class="form-control" value="N/A" id="contract" readonly>
+                            <button class="btn btn-primary" type="button" onclick="contractInformation()" disabled><i class="fas fa-eye"></i></button>
+                        </div>
+                    </div>
+                }
+            </div>
+            <fieldset disabled>
+                <div class="form-group row">
+                    <div class="col-sm-4">
+                        <strong><label class="control-label">Nombre del Cliente </label></strong>
+                        <input type="text" class="form-control" value="@itemHeader.custmrName">
+                    </div>
+                    <div class="col-sm-4">
+                        <strong><label class="control-label">Dirección </label></strong>
+                        <input type="text" class="form-control" value="@itemHeader.Address">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-8">
+                        <strong><label class="control-label">Descripción de la Unidad de Energia </label></strong>
+                        <input type="text" class="form-control" value="@itemHeader.itemName">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-4">
+                        <strong><label class="control-label">Código Artículo </label></strong>
+                        <input type="text" class="form-control" value="@itemHeader.itemCode">
+                    </div>
+                    <div class="col-sm-4">
+                        <strong><label class="control-label">Número de Serie </label></strong>
+                        <input type="text" class="form-control" value="@itemHeader.manufSN">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-4">
+                        <strong><label class="control-label">Rutina de Mantenimiento a aplicar </label></strong>
+                        <input type="text" class="form-control" value="@itemHeader.U_RutinaMantenimiento">
+                    </div>
+                    <div class="col-sm-4">
+                        <strong><label class="control-label">Tratado por </label></strong>
+                        <input type="text" class="form-control" value="@itemHeader.U_NAME">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-8">
+                        <strong><label class="control-label">Datos Adicionales </label></strong>
+                        <input type="text" class="form-control" value="@itemHeader.U_DatosAdicionales">
+                    </div>
+                </div>
+            </fieldset>
+
+        }
+        <br>
+    </div>
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div style="display:none">
+            <div class="col-sm-8" style="display:none">
+                <label class="control-label">Número de Llamada</label>
+                @Html.EditorFor(model => model.U_DocNum, new { htmlAttributes = new { @Value = docNum, @class = "form-control", @readonly = "readonly" } })
+            </div>
+            <div class="col-sm-4" style="display:none">
+                <label class="control-label">Número de Ticket</label>
+                @Html.EditorFor(model => model.U_Linea, new { htmlAttributes = new { @Value = lineNum, @class = "form-control", @readonly = "readonly" } })
+            </div>
+            <div class="col-sm-4" style="display:none">
+                <label class="control-label">Número de Ticket</label>
+                @Html.EditorFor(model => model.U_ServiceCallID, new { htmlAttributes = new { @Value = callID, @class = "form-control", @readonly = "readonly" } })
+            </div>
+        </div>
+        <div id="preroutine">
+            <h4>Pre-Rutina</h4>
+            <hr />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">1. ¿El cliente autoriza mantenimiento? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S1_P1, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S1_P1, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+        </div>
+        <div id="hiddenElement">
+            <h4>Inspección de Componentes</h4>
+            <hr />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">1. ¿El sistema de detección y supresión de incendios se encuentra activado? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P1, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P1, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P1, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">2. ¿El panel se encuentra libre de fallas (alarmas, supervisiones, problemas)? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P2, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @onclick = "onchangeS(this.value,'OtroP2')" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P2, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @onclick = "onchangeS(this.value,'OtroP2')" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P2, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @onclick = "onchangeS(this.value,'OtroP2')" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div id="OtroP2" style="display:none">
+                        <br /><label class="control-label"> Indique fallas: </label>
+                        @Html.TextAreaFor(model => model.U_S2_P2_Desc, new { @class = "form-control", @rows = 3, @maxlength = 150 })
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">3. ¿El panel cuenta con banco de baterías? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P3, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P3, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P3, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">4. ¿Las baterías se encuentran libres de sulfato? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P4, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @onclick = "onchangeS(this.value,'OtroP4')" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P4, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @onclick = "onchangeS(this.value,'OtroP4')" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P4, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @onclick = "onchangeS(this.value,'OtroP4')" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div id="OtroP4" style="display:none">
+                        <br />
+                        <div class="alert alert-danger" role="alert">
+                            Se recomienda cambio de baterías
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">5. ¿El voltaje de las baterías es el adecuado? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P5, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @onclick = "onchangeS(this.value,'OtroP5')" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P5, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @onclick = "onchangeS(this.value,'OtroP5')" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P5, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @onclick = "onchangeS(this.value,'OtroP5')" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div id="OtroP5" style="display:none">
+                        <br />
+                        <div class="alert alert-danger" role="alert">
+                            Se recomienda cambio de baterías
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">6. ¿El voltaje del cargador es el adecuado? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P6, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @onclick = "onchangeS(this.value,'OtroP6')" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P6, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @onclick = "onchangeS(this.value,'OtroP6')" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P6, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @onclick = "onchangeS(this.value,'OtroP6')" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div id="OtroP6" style="display:none">
+                        <br /><label class="control-label"> Indique problemas: </label>
+                        @Html.TextAreaFor(model => model.U_S2_P6_Desc, new { @class = "form-control", @rows = 3, @maxlength = 150 })
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">7. ¿El panel reporta las notificaciones de problemas de los dispositivos? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P7, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @onclick = "onchangeT(this.value,'OtroP7')" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P7, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @onclick = "onchangeT(this.value,'OtroP7')" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P7, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @onclick = "onchangeT(this.value,'OtroP7')" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div id="OtroP7" style="display:none">
+                        <br /><label class="control-label"> Indique problemas: </label>
+                        @Html.TextAreaFor(model => model.U_S2_P7_Desc, new { @class = "form-control", @rows = 3, @maxlength = 150 })
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">8. ¿La condición y ubicación de las sirenas y estrobos es la correcta? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P8, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @onclick = "onchangeS(this.value,'OtroP8')" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P8, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @onclick = "onchangeS(this.value,'OtroP8')" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P8, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @onclick = "onchangeS(this.value,'OtroP8')" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div id="OtroP8" style="display:none">
+                        <br /><label class="control-label"> Indique problemas: </label>
+                        @Html.TextAreaFor(model => model.U_S2_P8_Desc, new { @class = "form-control", @rows = 3, @maxlength = 150 })
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">9. ¿Se realizó prueba de lámparas? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P9, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P9, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P9, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">10. ¿El voltaje de alimentación del panel es el adecuado? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P10, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @onclick = "onchangeS(this.value,'OtroP10')" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P10, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @onclick = "onchangeS(this.value,'OtroP10')" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P10, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @onclick = "onchangeS(this.value,'OtroP10')" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div id="OtroP10" style="display:none">
+                        <br /><label class="control-label"> Indique problemas: </label>
+                        @Html.TextAreaFor(model => model.U_S2_P10_Desc, new { @class = "form-control", @rows = 3, @maxlength = 150 })
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">11. ¿Se verificó la ubicación correcta de los detectores de flama? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P11, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @onclick = "onchangeS(this.value,'OtroP11')" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P11, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @onclick = "onchangeS(this.value,'OtroP11')" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P11, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @onclick = "onchangeS(this.value,'OtroP11')" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div id="OtroP11" style="display:none">
+                        <br /><label class="control-label"> Indique problemas: </label>
+                        @Html.TextAreaFor(model => model.U_S2_P11_Desc, new { @class = "form-control", @rows = 3, @maxlength = 150 })
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">12. ¿Se verificó que los detectores de flama no estuvieran obstruidos? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P12, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @onclick = "onchangeS(this.value,'OtroP12')" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P12, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @onclick = "onchangeS(this.value,'OtroP12')" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P12, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @onclick = "onchangeS(this.value,'OtroP12')" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div id="OtroP12" style="display:none">
+                        <br /><label class="control-label"> Indique problemas: </label>
+                        @Html.TextAreaFor(model => model.U_S2_P12_Desc, new { @class = "form-control", @rows = 3, @maxlength = 150 })
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">13. ¿Se verificó el retorque de borneras al panel principal? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P13, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P13, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P13, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">14. ¿Se verificó el retorque de borneras al panel VESDA? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P14, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P14, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P14, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">15. ¿En qué rango se encuentra la presión del cilindro contenedor de agente? </label>
+                    @Html.DropDownListFor(model => Model.U_S2_P15, new List<SelectListItem>
+                  {
+                 new SelectListItem{ Text="Seleccione valor", Value = "0" },
+                      new SelectListItem{ Text="Baja Presión", Value = "Baja Presión" },
+                         new SelectListItem{ Text="Presión Normal", Value = "Presión Normal" },
+                         new SelectListItem{ Text="Sobre Presurizado", Value = "Sobre Presurizado" },
+                  }, new { @class = "form-control", @onchange = "onchangeC(this.value,'OtroP15')" })
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div id="OtroP15" style="display:none">
+                        <br />
+                        <div class="alert alert-danger" role="alert">
+                            Se recomienda presurizar el cilindro
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <h4>Chequeo de Servicio</h4>
+            <hr />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">1. Funcionamiento normal </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P1, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @onclick = "onchangeS(this.value,'OtroS3P1')" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P1, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @onclick = "onchangeS(this.value,'OtroS3P1')" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P1, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @onclick = "onchangeS(this.value,'OtroS3P1')" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div id="OtroS3P1" style="display:none">
+                        <br /><label class="control-label"> Indique problemas: </label>
+                        @Html.TextAreaFor(model => model.U_S3_P1_Desc, new { @class = "form-control", @rows = 3, @maxlength = 150 })
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">2. Inspección y limpieza interna de equipos </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P2, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P2, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P2, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">3. Inspección y limpieza externa de equipos </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P3, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P3, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P3, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">4. Pruebas del sistema correctas </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P4, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @onclick = "onchangeS(this.value,'OtroS3P4')" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P4, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @onclick = "onchangeS(this.value,'OtroS3P4')" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P4, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @onclick = "onchangeS(this.value,'OtroS3P4')" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div id="OtroS3P4" style="display:none">
+                        <br /><label class="control-label"> Indique problemas: </label>
+                        @Html.TextAreaFor(model => model.U_S3_P4_Desc, new { @class = "form-control", @rows = 3, @maxlength = 150 })
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">5. ¿El sistema de detección y supresión de incendios queda activado? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P5, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of", @onclick = "onchangeS(this.value,'OtroS3P5')" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P5, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of", @onclick = "onchangeS(this.value,'OtroS3P5')" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P5, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of", @onclick = "onchangeS(this.value,'OtroS3P5')" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div id="OtroS3P5" style="display:none">
+                        <br /><label class="control-label"> Indique problemas: </label>
+                        @Html.TextAreaFor(model => model.U_S3_P5_Desc, new { @class = "form-control", @rows = 3, @maxlength = 150 })
+                    </div>
+                </div>
+            </div><br />
+            <h4>Análisis Técnico / Instalaciones</h4>
+            <hr />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">1. Análisis Técnico / Instalaciones  </label>
+                    @Html.TextAreaFor(model => model.U_S4_P1, new { @class = "form-control", @rows = 3, @maxlength = 1500 })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">2. Análisis técnico del sistema  </label>
+                    @Html.TextAreaFor(model => model.U_S4_P2, new { @class = "form-control", @rows = 3, @maxlength = 1500 })
+                </div>
+            </div><br />
+            <h4>Observaciones</h4>
+            <hr />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">1. Ingrese detalle observaciones  </label>
+                    @Html.TextAreaFor(model => model.U_S5_P1, new { @class = "form-control", @rows = 3, @maxlength = 1500 })
+                </div>
+            </div><br />
+            <button style="float:right" type="button" onclick="confirmation()" class="btn btn-second">Finalizar Rutina</button>
+        </div>
+        <div id="hiddenElementE" style="display:none">
+            <div class="our-skills">
+                <div class="card" style="border:none !important">
+                    <div class="box-shadow">
+                        <h4 class="text-center">  Confirmación de Servicio</h4>
+                        <hr />
+                        <div class="form-row">
+                            <div class="col-sm-12">
+                                <label>La orden de trabajo <strong> @string.Concat(docNum, "-", lineNum) </strong>  ha sido finalizada!</label> <br />
+                                <label class="control-label">Ingrese correo electrónico para enviar la confirmación:</label><br />
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-sm-12">
+                                @Html.EditorFor(model => model.U_correo, new { htmlAttributes = new { @class = "form-control", @required = "required", @type = "email", @multiple = "multiple", @maxlength = "200" } })
+                            </div>
+                        </div><br />
+                              <input style="float:right" type="submit" value="Enviar Confirmación" class="btn btn-primary" onclick="this.form.submit(); this.disabled = true; this.value = 'Enviando Confirmacion...';" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <br />
+    <br />
+    <br />
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Complete los datos</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Debe de completar la pre-rutina para continuar con el mantenimiento asignado</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    @{
+        var data = new maintenanceIsertec.Connection.Contracts.DataContracts().getDetails(contractID);
+
+        <div class="modal fade" id="ModalContract" tabindex="-1" role="dialog" aria-labelledby="ModalContract" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="text-center modal-title" id="ModalContract">Cobertura del Contrato</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <fieldset disabled>
+                            <div class="form-group row">
+                                <div class="col-sm-12">
+                                    <strong><label class="control-label">No. Contrato </label></strong>
+                                    <input type="text" class="form-control" value="@data.ContractID">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-12">
+                                    <strong><label class="control-label">Tratado por </label></strong>
+                                    <input type="text" class="form-control" value="@data.U_NAME">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-6">
+                                    <strong><label class="control-label">Número de OV </label></strong>
+                                    <input type="text" class="form-control" value="@data.U_numeroOV">
+                                </div>
+                                <div class="col-sm-6">
+                                    <strong><label class="control-label">Tipo Contrato </label></strong>
+                                    <input type="text" class="form-control" value="@data.Tipos">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-12">
+                                    <strong><label class="control-label">Cobertura </label></strong>
+                                    <textarea rows="5" type="text" class="form-control">@data.Remarks1</textarea>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="modal-footer">
+                        @Html.ActionLink("Detalles", "details", "Contracts", new
+                   {
+                       id = data.ContractID
+                   }, new { @class = "btn btn-primary" })
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+</div>

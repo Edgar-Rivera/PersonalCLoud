@@ -1,0 +1,26 @@
+﻿@model maintenanceIsertec.Models.SiteUser
+@{
+    ViewBag.Title = "Personal Cloud - Iniciar Sesión";
+    Layout = "~/Views/Shared/partialLogin.cshtml";
+}
+<div class="bg-img" style="background-image: url(/Content/Images/bg-1.jpg)">
+    @using (Html.BeginForm("Login", "Login", FormMethod.Post, new { @class = "container" }))
+    {
+        <h2 style="text-align:center">Personal Cloud</h2>
+        <div class="input-container">
+            <i class="fa fa-user icon"></i>
+            @Html.TextBoxFor(model => Model.UserName, new { @class = "form-input", @placeholder = "Usuario", @required = true })
+        </div>
+        <div class="input-container">
+            <i class="fa fa-lock icon"></i>
+            @Html.TextBoxFor(model => Model.Password, new { @class = "input", @placeholder = "Contraseña", @required = true, @type = "password" })
+        </div>
+        @Html.ValidationSummary(true, "", new { id = "unsafe" })
+        <button type="submit" class="btn">Iniciar Sesión</button>
+       <p style="text-align:center">No tienes usuario?</p>
+       <div style="text-align:center">
+           @Html.ActionLink("Registrate", "CrearCuenta", "Cuenta", new { @class = "elements" }, null)
+       </div>
+
+    }
+</div>

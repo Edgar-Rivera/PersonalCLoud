@@ -1,0 +1,18 @@
+﻿@using maintenanceIsertec.Connection;
+@using maintenanceIsertec.Models;
+@{
+    ViewBag.Title = "Inicio - Isertec";
+}
+
+<h4 class="text-center">Bienvenido @Session["nombre"]</h4>
+<br />
+<div class="container-fluid">
+    <div class="row justify-content-md-center">
+        <div class="col-md-10">
+            @Html.Partial("dashdata")
+            @{Html.RenderAction("QuickAcces", "Home");}
+        </div>
+    </div>
+</div>
+
+

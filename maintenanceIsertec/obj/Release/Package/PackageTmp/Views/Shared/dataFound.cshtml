@@ -1,0 +1,25 @@
+﻿
+@{
+    ViewBag.Title = "No se encontro el recurso";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container">
+    <div class="our-skills">
+        <div class="card" style="border:none !important">
+            <div class="box-shadow">
+                <h4 class="text-center">  La orden de Trabajo no ha sido finalizada</h4>
+                <hr />
+                <div class="form-row">
+                    <div class="col-sm-12">
+                        <label>La orden de trabajo <b>@ViewBag.callID</b> a la que desea acceder no ha sido finalizada!</label> <br />
+                        <p>
+                            El estado actual de la orden de trabajo es: <span class="badge badge-warning">En Proceso</span><br />
+                            <label class="control-label">Podra consultar los datos de la rutina cuando se haya finalizado por completo la misma</label><br />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

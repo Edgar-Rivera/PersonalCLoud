@@ -1,0 +1,281 @@
+﻿@model IEnumerable<maintenanceIsertec.Models.RA.AtencionGeneral>
+@using maintenanceIsertec.Models.Consult
+@{
+    ViewBag.Title = "Atención General Redes y Aplicaciones";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script type='text/javascript'>
+    function contractInformation() {
+        if ((document.getElementById('contract').value != "")) {
+            $('#ModalContract').modal('show');
+        }
+    }
+</script>
+@{
+    string subject = string.Empty;
+    int contractID = 0;
+}
+<div class="container">
+    @foreach (List itemHeader in ViewBag.header)
+    {
+        subject = itemHeader.subject;
+        contractID = itemHeader.contractID;
+        <span class="badge badge-primary float-left">Redes y Aplicaciones</span>
+        <br />
+        if (itemHeader.Close == "Y")
+        {
+            <span class="badge badge-success float-right">Finalizado - Cerrado</span>
+        }
+        else
+        {
+
+            <span class="badge badge-danger float-right">Finalizado</span>
+        }
+
+        <h4>Atención General</h4>
+        <h4>Lista de Control – Atención General</h4>
+        <hr />
+        <h4>Detalles del Equipo / Sitio</h4>
+
+        <div class="form-group row">
+            <div class="col-sm-4">
+                <strong><label class="control-label">Orden de Trabajo </label></strong>
+                <input type="text" class="form-control" value="@string.Concat(itemHeader.DocNum,"-",itemHeader.Line)" readonly>
+            </div>
+            @if (itemHeader.contractID > 0)
+            {
+                <div class="col-sm-4">
+                    <strong><label class="control-label">No. Contrato </label></strong>
+                    <div class="input-group">
+                        <input type="text" class="form-control" value="@itemHeader.contractID" id="contract" readonly>
+                        <button class="btn btn-primary" type="button" onclick="contractInformation()"><i class="fas fa-eye"></i></button>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="col-sm-4">
+                    <strong><label class="control-label">No. Contrato </label></strong>
+                    <div class="input-group">
+                        <input type="text" class="form-control" value="N/A" id="contract" readonly>
+                        <button class="btn btn-primary" type="button" onclick="contractInformation()" disabled><i class="fas fa-eye"></i></button>
+                    </div>
+                </div>
+            }
+        </div>
+        <fieldset disabled>
+            <div class="form-group row">
+                <div class="col-sm-4">
+                    <strong><label class="control-label">Nombre del Cliente </label></strong>
+                    <input type="text" class="form-control" value="@itemHeader.custmrName">
+                </div>
+                <div class="col-sm-4">
+                    <strong><label class="control-label">Dirección </label></strong>
+                    <input type="text" class="form-control" value="@itemHeader.Address">
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-8">
+                    <strong><label class="control-label">Descripción de la Unidad de Energia </label></strong>
+                    <input type="text" class="form-control" value="@itemHeader.itemName">
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-4">
+                    <strong><label class="control-label">Código Artículo </label></strong>
+                    <input type="text" class="form-control" value="@itemHeader.itemCode">
+                </div>
+                <div class="col-sm-4">
+                    <strong><label class="control-label">Número de Serie </label></strong>
+                    <input type="text" class="form-control" value="@itemHeader.manufSN">
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-4">
+                    <strong><label class="control-label">Rutina de Mantenimiento aplicada </label></strong>
+                    <input type="text" class="form-control" value="@itemHeader.U_RutinaMantenimiento">
+                </div>
+                <div class="col-sm-4">
+                    <strong><label class="control-label">Tratado por </label></strong>
+                    <input type="text" class="form-control" value="@itemHeader.U_NAME">
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-4">
+                    <strong><label class="control-label">Hora Inicio </label></strong>
+                    <input type="text" class="form-control" value="@itemHeader.StartTime">
+                </div>
+                <div class="col-sm-4">
+                    <strong><label class="control-label">Hora Fin </label></strong>
+                    <input type="text" class="form-control" value="@itemHeader.EndTime">
+                </div>
+            </div>
+        </fieldset>
+        <br />
+    }
+    @foreach (var item in Model)
+    {
+        <h4>Tareas Planificadas</h4>
+        <hr />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">1. Persona de Contacto </label>
+                <input value="@item.U_Contacto" class="form-control" readonly />
+            </div>
+        </div>
+        if (item.U_Contacto == "Otro")
+        {
+            <div class="row">
+                <div class="col-sm-6">
+                    <div id="OtroC">
+                        <br /><label class="control-label"> Ingrese persona de Contacto </label>
+                        <input value="@item.U_otroContacto" class="form-control" readonly />
+                    </div>
+                </div>
+            </div>
+        }
+        <br />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">2. Tipo de Trabajo </label>
+                <input value="@item.U_tipoTrabajo" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">3. Tipo de Incidencia </label>
+                <input value="@item.U_tipoIncidencia" class="form-control" readonly />
+            </div>
+        </div>
+        if (item.U_tipoIncidencia == "Otro")
+        {
+            <div class="row">
+                <div class="col-sm-6">
+                    <div id="Otro">
+                        <br /><label class="control-label">Ingrese descripción </label>
+                        <input value="@item.U_incidenciaOtro" class="form-control" readonly />
+                    </div>
+                </div>
+            </div>
+
+        }
+        <br />
+        <h4>Descripción de la Orden de Trabajo</h4>
+        <hr />
+
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">1. Descripción </label>
+                <textarea rows="3" maxlength="1500" class="form-control" name="subject" readonly>@subject</textarea>
+            </div>
+        </div>
+        <br />
+
+        <h4>Detalles Técnicos</h4>
+        <hr />
+
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">1. Solución / Protocolo  </label>
+                <textarea rows="4" class="form-control" readonly>@item.U_S1_P1</textarea>
+            </div>
+        </div>
+        <br />
+
+        <h4>Descripción de la actividad</h4>
+        <hr />
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">1. Ingrese detalles </label>
+                <textarea rows="4" class="form-control" readonly>@item.U_S2_P1</textarea>
+            </div>
+        </div>
+        <br />
+
+        <div class="form-row">
+            <div class="col-sm-6">
+                <label class="control-label">Correo(s) electrónico al cual se envio la confirmación </label>
+                <input value="@item.U_correo" class="form-control" readonly />
+            </div>
+        </div>
+        <br />
+        @Html.ActionLink("Regresar", "list", "Consult", new { @class = "btn btn-secondary" })
+        @Html.ActionLink("Descargar OT", "AtenciónGeneralRA", "Report", new
+        {
+            callID = item.U_ServiceCallID,
+            Line = item.U_Linea,
+            DocNum = item.U_DocNum
+         },
+        new { @class = "btn btn btn-second", @style = "float:right" })
+
+        @Html.ActionLink("Reenviar OT", "updateServiceCallMail", "Report", new
+    {
+        callID = item.U_ServiceCallID,
+        Line = item.U_Linea,
+        typeService = "OT_GENERAL_RA",
+        DocEntry = item.DocEntry
+    },
+     new { @class = "btn btn-primary mr-1 ", @type = "button", @style = "float:right" })
+        <br />
+    }
+    <br />
+    <br />
+    <br />
+    @{
+        var data = new maintenanceIsertec.Connection.Contracts.DataContracts().getDetails(contractID);
+
+        <div class="modal fade" id="ModalContract" tabindex="-1" role="dialog" aria-labelledby="ModalContract" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="text-center modal-title" id="ModalContract">Cobertura del Contrato</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <fieldset disabled>
+                            <div class="form-group row">
+                                <div class="col-sm-12">
+                                    <strong><label class="control-label">No. Contrato </label></strong>
+                                    <input type="text" class="form-control" value="@data.ContractID">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-12">
+                                    <strong><label class="control-label">Tratado por </label></strong>
+                                    <input type="text" class="form-control" value="@data.U_NAME">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-6">
+                                    <strong><label class="control-label">Número de OV </label></strong>
+                                    <input type="text" class="form-control" value="@data.U_numeroOV">
+                                </div>
+                                <div class="col-sm-6">
+                                    <strong><label class="control-label">Tipo Contrato </label></strong>
+                                    <input type="text" class="form-control" value="@data.Tipos">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-12">
+                                    <strong><label class="control-label">Cobertura </label></strong>
+                                    <textarea rows="5" type="text" class="form-control">@data.Remarks1</textarea>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="modal-footer">
+                        @Html.ActionLink("Detalles", "details", "Contracts", new
+                   {
+                       id = data.ContractID
+                   }, new { @class = "btn btn-primary" })
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

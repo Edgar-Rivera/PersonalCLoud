@@ -1,0 +1,404 @@
+﻿@model IEnumerable<maintenanceIsertec.Models.Files>
+    @using System.Data.Odbc;
+@{
+    ViewBag.Title = "Detalles del Archivo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-sm">
+    @foreach (var item in Model)
+    {
+        int id_item = item.id_file;
+        <h4>Detalles del Archivo</h4>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="inputEmail4">Nombre del Archivo</label>
+                <input type="text" class="form-control" id="inputEmail4" value="@item.nombre" disabled>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="inputPassword4">Propietario</label>
+                <input type="text" class="form-control" id="inputPassword4" value="@item.propietario" disabled>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="inputEmail4">Tipo de Archivo</label>
+                <input type="text" class="form-control" id="inputEmail4" value="@item.tipo" KB disabled>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="inputPassword4">Tamaño</label>
+                <input type="text" class="form-control" id="inputPassword4" value="@string.Concat(@item.peso, " KB")" disabled>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <strong><label class="control-label">Compartido</label></strong>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                    </div>
+                    <input type="text" class="form-control" value="@item.compartido" disabled>
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <strong><label class="control-label">Comentarios</label></strong>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" value="@item.metadata" aria-describedby="basic-addon2" disabled>
+                    @if (item.username == (string)Session["user"])
+                    {
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#exampleModalM"><i class="far fa-edit"></i></button>
+                        </div>
+                    }
+
+                </div>
+            </div>
+
+        </div>
+        if (item.username != (string)Session["user"])
+        {
+            <h5>@item.propietario ha compartido este archivo</h5>
+            OdbcConnection cnx = new OdbcConnection("Dsn=PERSONALCLOUD");
+            cnx.Open();
+            string temp = string.Empty;
+            string sql = string.Format("select detalles from SHARED_FILES_DETAILS where id_file = {0} and usuario = '{1}';", id_item, Session["user"]);
+            OdbcCommand cmd = new OdbcCommand(sql, cnx);
+            OdbcDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                temp = reader.GetString(0);
+            }
+            <div>
+                <div class="alert alert-success" role="alert">
+                    @temp
+                </div>
+            </div>
+        }
+        {
+            string fileName = "~/Files/" + item.nombre;
+            <div class="text-center">
+                <img src="@Url.Content(fileName)" class="img-fluid" alt="...">
+            </div>
+        }
+
+        <br />
+        <button type="button" class="btn btn-second" onclick="location.href='@Url.Action("Download", "Documents", new { name = item.nombre })'">Descargar archivo</button>
+        if (item.username == (string)Session["user"])
+        {
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                Compartir archivo
+            </button>
+        }
+        if (item.username == (string)Session["user"])
+        {
+            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal">
+                Eliminar Archivo
+            </button>
+            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#exampleModal3">
+                Renombrar Archivo
+            </button>
+            <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#exampleModalV">
+                Mover Archivo
+            </button>
+        }
+        else
+        {
+            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModalD">
+                Eliminar Archivo de mi Repositorio
+            </button>
+        }
+        <br />
+        <br />
+        if (item.compartido == "S")
+        {
+            if (item.username == (string)Session["user"])
+            {
+                <p>
+                    <button class="btn btn-warning" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                        Informacion de archivo compartido
+                    </button>
+                </p>
+            }
+            <div class="collapse" id="collapseExample">
+                <div class="card card-body">
+                    @{
+                        OdbcConnection cnx = new OdbcConnection("Dsn=PERSONALCLOUD");
+                        cnx.Open();
+                        string sql = string.Format("select usuario, detalles from SHARED_FILES_DETAILS where id_file = {0};", id_item);
+                        OdbcCommand cmd = new OdbcCommand(sql, cnx);
+                        OdbcDataReader reader = cmd.ExecuteReader();
+                        <h4>Detalle de archivo compartido</h4>
+                        <hr />
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="inputEmail4">Compartido con</label>
+
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="inputPassword4">Comentario</label>
+
+                            </div>
+                        </div>
+                        while (reader.Read())
+                        {
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+
+                                    <input type="text" class="form-control" id="inputEmail4" value="@reader.GetString(0)" disabled>
+                                </div>
+                                <div class="form-group col-md-6">
+
+                                    <input type="text" class="form-control" id="inputPassword4" value="@reader.GetString(1)" disabled>
+                                </div>
+                            </div>
+                        }
+                        cnx.Close();
+                    }
+                </div>
+            </div>
+        }
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalCenterTitle">Compartir Archivo</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        @using (Html.BeginForm("SharedFile", "Documents"))
+                        {
+                            <label class="control-label">1. Persona de Contacto </label>
+
+                            var data = new List<maintenanceIsertec.Models.userShare>();
+                            OdbcConnection cnx = new OdbcConnection("Dsn=PERSONALCLOUD");
+                            cnx.Open();
+                            string sql = string.Format("SELECT codusuario, email from usuario where codusuario <> '{0}';", Session["user"]);
+                            OdbcCommand cmd = new OdbcCommand(sql, cnx);
+                            OdbcDataReader reader = cmd.ExecuteReader();
+                            while (reader.Read())
+                            {
+                                data.Add(new maintenanceIsertec.Models.userShare()
+                                {
+
+                                    usuario = reader.IsDBNull(0) ? string.Empty : reader.GetString(0),
+                                    email = reader.IsDBNull(1) ? string.Empty : reader.GetString(1)
+                                });
+                            }
+                            cnx.Close();
+                            // Code behind business partner
+
+                            @Html.Hidden("id", id_item)
+                            @Html.Hidden("propietario", Session["user"])
+                            @Html.DropDownList("usuario", new SelectList(data, "usuario", "usuario"),
+       new { @class = "form-control" })
+                            <br />
+                            <input type="text" class="form-control" placeholder="Ingrese detalles......" name="detalles" aria-describedby="basic-addon2" required>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                            </div>
+                        }
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel3" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Renombrar Archivo</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Ingrese un valor valido
+                        @using (Html.BeginForm("renameFile", "Tools"))
+                        {
+
+                            @Html.Hidden("id", id_item);
+                            @Html.Hidden("temp", item.nombre);
+                            <div class="form-group">
+                                <label class="control-label col-md-10">1. Nombre Archivo</label>
+                                <div class="col-md-10">
+                                    <input type="text" id="nombre" name="nombre" class="form-control" required>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel3" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Eliminar Archivo</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        @using (Html.BeginForm("deleteFile", "Tools"))
+                        {
+
+                            @Html.Hidden("id", id_item);
+                            <div class="form-group">
+                                <strong>Esta seguro que desea eliminar este archivo?</strong><br />
+                                Si el archivo lo tienes compartido, las personas con las que lo has compartido tampoco podran visualizarlo!
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-primary">Eliminar archivo</button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModalD" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel3" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Eliminar Archivo</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        @using (Html.BeginForm("deleteFileR", "Tools"))
+                        {
+
+                            @Html.Hidden("id", id_item);
+                            @Html.Hidden("user", (string)Session["user"]);
+                            <div class="form-group">
+                                <strong>Esta seguro que desea eliminar este archivo?</strong><br />
+                                Debido a que no eres el propietario del archivo, el archivo unicamente se eliminara de tu repositorio!
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-primary">Eliminar archivo</button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModalM" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel3" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Editar Comentarios</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        @using (Html.BeginForm("editComents", "Tools"))
+                        {
+
+                            @Html.Hidden("id", id_item);
+                            <div class="form-group">
+                                <label class="control-label col-md-10">1. Ingrese Comentarios</label>
+                                <div class="col-md-10">
+                                    <input type="text" id="nombre" name="nombre" class="form-control" required>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="exampleModalV" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalCenterTitle">Mover Archivo</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        @using (Html.BeginForm("moveFile", "Tools"))
+                        {
+                            <label class="control-label">1. Directorio a mover </label>
+
+                            var data = new List<maintenanceIsertec.Models.folders>();
+                            OdbcConnection cnx = new OdbcConnection("Dsn=PERSONALCLOUD");
+                            cnx.Open();
+                            string sql = string.Format("select * from folders where propietario = '{0}';", Session["user"]);
+                            OdbcCommand cmd = new OdbcCommand(sql, cnx);
+                            OdbcDataReader reader = cmd.ExecuteReader();
+                            while (reader.Read())
+                            {
+                                data.Add(new maintenanceIsertec.Models.folders()
+                                {
+
+                                    id = reader.GetInt32(0),
+                                    nombre = reader.GetString(1),
+                                    propietario = reader.IsDBNull(2) ? string.Empty : reader.GetString(2),
+                                    compartido = reader.IsDBNull(3) ? string.Empty : reader.GetString(3),
+                                    regdate = reader.GetDateTime(4),
+                                });
+                            }
+                            cnx.Close();
+                            // Code behind business partner
+
+                            @Html.Hidden("id", id_item)
+                            @Html.DropDownList("carpeta", new SelectList(data, "id", "nombre"),
+       new { @class = "form-control" })
+                            <br />
+                           
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                            </div>
+                        }
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+    }
+</div>
+

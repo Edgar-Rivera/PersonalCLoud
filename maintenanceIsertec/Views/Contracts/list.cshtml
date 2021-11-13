@@ -1,0 +1,102 @@
+﻿@model PagedList.IPagedList<maintenanceIsertec.Models.Contracts.List>
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "Contratos de Servicio";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container-fluid">
+    <div class="row justify-content-md-center">
+        <div class="col-md-10">
+
+            <h4>Contratos de Servicio</h4>
+            <hr />
+
+
+            @using (Html.BeginForm("list", "Contracts", FormMethod.Get))
+            {
+                <div class="input-group mb-3">
+                    <br />
+                    <input type="text" class="form-control" placeholder="Buscar...." name="findString" aria-describedby="basic-addon2" required>
+                    <div class="input-group-append">
+                        <input type="submit" class="btn btn-success" value="Buscar" />
+                        <button class="btn btn-primary bi bi-funnel-fill" type="button" data-toggle="collapse" data-target="#collapseFilters" aria-expanded="false" aria-controls="collapseFilters"><i class="fas fa-filter"></i></button>
+                    </div>
+                </div>
+            }
+
+            <table class="table table-responsive-sm table-hover">
+                <caption>Contratos de Servicio Vigentes</caption>
+                <thead class="thead-dark text-center">
+                    <tr>
+                        <th>
+                            Número Contrato
+                        </th>
+                        <th>
+                            Cliente
+                        </th>
+                        <th>
+                            Descripción
+                        </th>
+                        <th>
+                            Número de OV
+                        </th>
+                        <th>
+                            Tratado por
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                @foreach (var item in Model)
+                {
+                    <tr style="cursor:pointer !important" onclick="location.href = '@(Url.Action("details", "Contracts", new { id=item.ContractID }))'">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ContractID)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CstmrName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Descriptio)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.U_numeroOV)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.U_NAME)
+                        </td>
+
+                    </tr>
+                }
+
+            </table>
+            <hr />
+            <p class="text-center">Página @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) de @Model.PageCount</p>
+
+            <nav>
+                <ul class="pagination justify-content-center">
+                    @Html.PagedListPager(
+                Model,
+                page => Url.Action("list",
+                new
+                {
+                    page,
+                    findString = ViewBag.findString
+                }
+                ),
+                new PagedListRenderOptions()
+                {
+                    LinkToFirstPageFormat = "<<",
+                    LinkToPreviousPageFormat = "Anterior",
+                    LinkToNextPageFormat = "Siuiente",
+                    LinkToLastPageFormat = ">>",
+                    DisplayEllipsesWhenNotShowingAllPageNumbers = false,
+                    LiElementClasses = new List<string> { "page-item", "page-link" }
+                })
+                </ul>
+            </nav>
+            <br />
+        </div>
+    </div>
+</div>

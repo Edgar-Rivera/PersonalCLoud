@@ -1,0 +1,183 @@
+﻿@model IEnumerable<maintenanceIsertec.Models.Cuenta>
+@using System.Data.Odbc;
+@{
+    ViewBag.Title = "Detalles Usuario";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-sm">
+
+    <h3>Detalles del Usuario</h3>
+    <hr />
+    @foreach (var item in Model)
+    {
+        string temp = item.codusuario;
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="inputEmail4">Usuario</label>
+                <input type="text" class="form-control" id="inputEmail4" value="@item.codusuario" disabled>
+            </div>
+
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="inputEmail4">Nombre Usuario</label>
+                <input type="text" class="form-control" id="inputEmail4" value="@item.firstname" disabled>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="inputPassword4"> Apellido Usuario </label>
+                <input type="text" class="form-control" id="inputPassword4" value="@item.lastname" disabled>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="inputEmail4">Email</label>
+                <input type="text" class="form-control" id="inputEmail4" value="@item.email" disabled>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="inputPassword4"> Fecha Registro </label>
+                <input type="text" class="form-control" id="inputPassword4" value="@item.reg_date" disabled>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="inputEmail4">Tipo Cuenta</label>
+                <input type="text" class="form-control" id="inputEmail4" value="@item.tipocuenta" disabled>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="inputPassword4"> Rol </label>
+                <input type="text" class="form-control" id="inputPassword4" value="@item.rol" disabled>
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#exampleModal">
+            Cambiar Rol
+        </button><br />
+        <br />
+        <h3>Método de Pago</h3>
+        <hr />
+        foreach (maintenanceIsertec.Models.MetodoPago pago in ViewBag.pago)
+        {
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="inputEmail4">Número de Tarjeta</label>
+                    <input type="text" class="form-control" id="inputEmail4" value="@pago.codigo" disabled>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="inputPassword4"> Nombre Tarjeta </label>
+                    <input type="text" class="form-control" id="inputPassword4" value="@string.Concat(item.firstname," ",item.lastname)" disabled>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="inputEmail4">Mes Vencimiento</label>
+                    <input type="text" class="form-control" id="inputEmail4" value="@pago.fecha_vencimiento" disabled>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="inputPassword4"> Año Vencimiento </label>
+                    <input type="text" class="form-control" id="inputEmail4" value="@pago.fecha_vencimiento_v" disabled>
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-success float-right" data-toggle="modal" data-target="#exampleModal2">
+                Actualizar Método de Pago
+            </button><br />
+        }
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Asignar nuevo rol</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Seleccione un valor valido a asignar
+                        @using (Html.BeginForm("UpdateRol", "Tools"))
+                        {
+                            <label class="control-label">1. Rol a Asignar </label>
+                            @Html.Hidden("usuario", temp);
+                            @Html.DropDownList("rol", new List<SelectListItem>
+                  {
+                 new SelectListItem{ Text="Seleccione valor", Value = "0" },
+                      new SelectListItem{ Text="Usuario Estandar", Value = "user" },
+                         new SelectListItem{ Text="Administrador", Value = "admin" },
+                         new SelectListItem{ Text="Visitante", Value = "visit" },
+                  }, new { @class = "form-control" })
+
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Actualizar Método de Pago</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Seleccione un valor valido a asignar
+                        @using (Html.BeginForm("UpdatePago", "Tools"))
+                        {
+                            @Html.Hidden("usuario", temp);
+                            <div class="form-group">
+                                <label class="control-label col-md-10">Ingresa Número de Tarjeta</label>
+                                <div class="col-md-10">
+                                    <input type="text" id="test" name="test" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-10">Nombre en la Tarjeta</label>
+                                <div class="col-md-10">
+                                    <input type="text" id="forget" name="forget" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-10">Código de Seguridad CVV</label>
+                                <div class="col-md-10">
+                                    <input type="text" id="test2" name="test2" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-5">Fecha Vencimiento</label>
+                                <div class="col-md-5">
+                                    <input type="text" id="test3" name="test3" class="form-control" required placeholder="MM">
+                                </div><br />
+                                <div class="col-md-5">
+                                    <input type="text" id="test4" name="test4" class="form-control" required placeholder="YY">
+                                </div>
+                            </div>
+                            <br />
+
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+
+
+</div>
+<br />
+<br />
+<br />

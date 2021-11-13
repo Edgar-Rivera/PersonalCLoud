@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title </title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/Site.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.filedrop.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.10.2/css/all.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+
+            <div class="navbar-brand">
+                <a href="@Url.Action("Index", "Home")">
+                    <img src="~/Content/Images/cloud.png" width="40" height="40" alt="isericon" />
+                </a>
+            </div>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">@Html.ActionLink("Dashboard", "Index", "Home", null, new { @class = "nav-link" })</li>
+                    <li class="nav-item">@Html.ActionLink("Mi perfil", "myprofile", "Documents", null, new { @class = "nav-link" })</li>
+
+                    <li class="nav-item active">@Html.ActionLink("Mis Documentos", "list", "Documents", null, new { @class = "nav-link" })</li>
+                    <li class="nav-item active">@Html.ActionLink("Mis Directorios", "folders", "Documents", null, new { @class = "nav-link" })</li>
+                    <li class="nav-item active">@Html.ActionLink("Compartidos Conmigo", "shared", "Documents", null, new { @class = "nav-link" })</li>
+                    @if ((string)Session["rol"] == "admin")
+                    {
+                        <li class="nav-item active">@Html.ActionLink("Admin Tools", "Admin", "Tools", null, new { @class = "nav-link" })</li>
+                    }
+                </ul>
+            </div>
+            <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                <ul class="navbar-nav d-inline-flex">
+                    <li class="nav-item active">@Html.ActionLink("Cerrar Sesión", "logoutSession", "Login", null, new { @class = "nav-link" })</li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <main role="main">
+        @RenderBody()
+    </main>
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; @DateTime.Now.Year - Personal Cloud, S.A. - <a href="https://www.personalcloud.com">www.personalcloud.com</a>
+        </div>
+    </footer>
+    @Scripts.Render("~/bundles/jquery")
+    <script src="~/Scripts/jquery.filedrop.js"></script>
+    <script type="text/javascript">
+        $(function () {
+           
+            $('#dropArea').filedrop({
+                url: '@Url.Action("UploadFiles")',
+                allowedfiletypes: ['image/jpeg', 'image/png', 'image/gif'],
+                allowedfileextensions: ['.jpg', '.jpeg', '.png', '.gif'],
+                paramname: 'files',
+                maxfiles: 5,
+                maxfilesize: 5, // in MB
+                dragOver: function () {
+                    alert('hi');
+                    $('#dropArea').addClass('active-drop');
+                },
+                dragLeave: function () {
+                    $('#dropArea').removeClass('active-drop');
+                },
+                drop: function () {
+                    $('#dropArea').removeClass('active-drop');
+                },
+                afterAll: function (e) {
+                    $('#dropArea').html('file(s) uploaded successfully');
+                },
+                uploadFinished: function (i, file, response, time) {
+                    $('#uploadList').append('<li class="list-group-item">'+file.name+'</li>')
+                }
+            })
+        })
+    </script>
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>
+
+
+
+
+

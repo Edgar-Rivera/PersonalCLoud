@@ -1,0 +1,61 @@
+﻿@model IEnumerable<maintenanceIsertec.Models.folders>
+@{
+    ViewBag.Title = "Mis directorios";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-md">
+    <h4> Mis Directorios <span class="badge badge-secondary">@Model.ToList().Count</span></h4>
+    <button type="button" class="btn btn-primary float-left" data-toggle="modal" data-target="#exampleModal">
+        Crear Directorio
+    </button><br />
+    <br /><hr />
+    <br />
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-sm-3">
+                <div class="card border-0" style="width: 7rem;">
+                    <a href='@Url.Action("folderDetails", "Documents", new { id = item.id, nombre = item.nombre})'>
+                        <img class="card-img-top text-center" src="~/Content/Images/file-and-folder.png" alt="Card image cap">
+                    </a>
+                    <div class="card-body">
+                        <h5 class="card-title text-center">@item.nombre</h5>
+
+                    </div>
+                </div>
+                </div>
+                }
+            </div>
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Crear Nuevo Dictorio</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Seleccione un valor valido a asignar
+                            @using (Html.BeginForm("createDirectorio", "Tools"))
+                            {
+                                @Html.Hidden("usuario", (string)Session["user"]);
+                                <div class="form-group">
+                                    <label class="control-label col-md-10">1. Nombre Directorio</label>
+                                    <div class="col-md-10">
+                                        <input type="text" id="nombre" name="nombre" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary">Crear Directorio</button>
+                                </div>
+
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>

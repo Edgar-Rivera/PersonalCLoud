@@ -1,0 +1,113 @@
+﻿@model maintenanceIsertec.Models.Contracts.Details
+@using maintenanceIsertec.Models.Contracts
+@{
+    ViewBag.Title = "Contrato de Servicio";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <h4>Contrato de Servicio</h4>
+    <hr />
+    <fieldset disabled>
+        <div class="form-group row">
+            <div class="col-sm-8">
+                <strong><label class="control-label">Número de Contrato </label></strong>
+                <input type="text" class="form-control" value="@Model.ContractID" readonly>
+            </div>
+            <div class="col-sm-4">
+                <strong><label class="control-label" style="text-align:center">Número de OV</label></strong>
+                <input type="text" class="form-control" value="@Model.U_numeroOV" readonly>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-4">
+                <strong><label class="control-label">Código Cliente </label></strong>
+                <input type="text" class="form-control" value="@Model.CstmrCode" readonly>
+            </div>
+            <div class="col-sm-4">
+                <strong><label class="control-label">Nombre Cliente </label></strong>
+                <input type="text" class="form-control" value="@Model.CstmrName" readonly>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-8">
+                <strong><label class="control-label">Descripción </label></strong>
+                <input type="text" class="form-control" value="@Model.Descriptio" readonly>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-4">
+                <strong><label class="control-label">Fecha Inicio </label></strong>
+                <input type="text" class="form-control" value="@Model.StartDate.ToShortDateString()" readonly>
+            </div>
+            <div class="col-sm-4">
+                <strong><label class="control-label">Fecha Fin </label></strong>
+                <input type="text" class="form-control" value="@Model.EndDate.ToShortDateString()" readonly>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-4">
+                <strong><label class="control-label">Tipo Solución </label></strong>
+                <input type="text" class="form-control" value="@Model.Solucion" readonly>
+            </div>
+            <div class="col-sm-4">
+                <strong><label class="control-label">Respaldo </label></strong>
+                <input type="text" class="form-control" value="@Model.Respaldo" readonly>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-4">
+                <strong><label class="control-label">Monitoreo </label></strong>
+                <input type="text" class="form-control" value="@Model.Monitoreo" readonly>
+            </div>
+            <div class="col-sm-4">
+                <strong><label class="control-label">Periodicidad </label></strong>
+                <input type="text" class="form-control" value="@Model.Periodicidad" readonly>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-4">
+                <strong><label class="control-label">Variante de Contrato </label></strong>
+                <input type="text" class="form-control" value="@Model.Tipos" readonly>
+            </div>
+            <div class="col-sm-4">
+                <strong><label class="control-label">Tratado por </label></strong>
+                <input type="text" class="form-control" value="@Model.U_NAME" readonly>
+            </div>
+        </div>
+        <br />
+        <h4>Equipos / Activos en Contrato</h4>
+        <hr />
+        <table class="table table-responsive-sm table-hover">
+            <caption>Equipos en este contrato</caption>
+            <thead class="thead-dark text-center">
+                <tr>
+                    <th>
+                        Código Artículo
+                    </th>
+                    <th>
+                        Descripción
+                    </th>
+                    <th>
+                        Número de Serie
+                    </th>
+                </tr>
+            </thead>
+            @foreach (ItemList itemlist in ViewBag.items)
+            {
+                <tr>
+                    <td>
+                        @itemlist.ItemCode
+                    </td>
+                    <td>
+                        @itemlist.ItemName
+                    </td>
+                    <td>
+                        @itemlist.ManufSN
+                    </td>
+                </tr>
+            }
+        </table>
+    </fieldset>
+    <br />
+</div>

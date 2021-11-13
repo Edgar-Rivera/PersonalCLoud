@@ -1,0 +1,34 @@
+﻿@{
+    ViewBag.Title = "Internal Server Error";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Internal Server Error</title>
+</head>
+<body>
+    <div class="our-skills">
+        <div class="card" style="border:none !important">
+            <div class="box-shadow">
+                <h4 style="text-align:center">Internal Server Error </h4>
+                <hr />
+                <div>                  
+                    <p class="text-justify">Error al procesar la solicitud. Asegurese de llenar las campos con los datos requeridos de la rutina realizada</p>
+                    <p class="text-justify">Compruebe alguno de los siguientes errores:</p>                  
+                    <p class="text-center"><strong>@ViewBag.exception</strong></p>                    
+                </div>
+                <ul>
+                    <li>La fecha de inicio y fin de la rutina se encuentran en desface</li>
+                    <li>El tamaño de un campo ha superado el maximo permitido</li>
+                    <li>La orden de trabajo ya ha sido finalizada previamente</li>
+                    <li>No se ha finalizado la pre-rutina</li>
+                </ul>
+                @Html.ActionLink("Regresar", "list", "Schedulings", new { @class = "btn btn-second" })
+            </div>
+        </div>
+    </div>
+</body>
+</html>

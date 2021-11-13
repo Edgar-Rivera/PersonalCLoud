@@ -1,0 +1,119 @@
+﻿@model PagedList.IPagedList<maintenanceIsertec.Models.Cuenta>
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "Admin Tools";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<br />
+<div class="container-md">
+    <h4 class="text-left"> Usuarios Registrados <span class="badge badge-secondary">@Model.TotalItemCount</span></h4>
+    <br />
+    @using (Html.BeginForm("Admin", "Tools", FormMethod.Get))
+    {
+        <div class="input-group mb-3">
+            <br />
+            <input type="text" class="form-control" placeholder="Buscar...." name="findString" aria-describedby="basic-addon2" required>
+            <div class="input-group-append">
+                <input type="submit" class="btn btn-success" value="Buscar" />
+                <button class="btn btn-primary bi bi-funnel-fill" type="button" data-toggle="collapse" data-target="#collapseFilters" aria-expanded="false" aria-controls="collapseFilters"><i class="fas fa-filter"></i></button>
+            </div>
+        </div>
+    }
+    <table class="table table-responsive-sm table-hover">
+        <caption>Documentos Registrados</caption>
+        <thead class="thead-dark text-center">
+            <tr>
+                <th>
+                    Usuario
+                </th>
+                <th>
+                    Nombre Usuario
+                </th>
+                <th>
+                    Apellido Usuario
+                </th>
+                <th>
+                    Email
+                </th>
+                <th>
+                    Fecha Registro
+                </th>
+                <th>
+                    Tipo Cuenta
+                </th>
+                <th>
+                    Rol asignado
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        @foreach (var item in Model)
+        {
+    <tr style="cursor:pointer !important" onclick="location.href = '@(Url.Action( "details", "Tools", new { id =item.codusuario}))'">
+
+        <td>
+            @Html.DisplayFor(modelItem => item.codusuario)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.firstname)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.lastname)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.email)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.reg_date)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.tipocuenta)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.espacio)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.rol)
+        </td>
+    </tr>
+        }
+    </table>
+    <a href="@Url.Action("ExportExcel", "Tools", new {  findString = ViewBag.findString })" class="float-left">
+        <span>
+            Exportar a Excel
+        </span>
+    </a>
+    <hr />
+    <p class="text-center">Página @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) de @Model.PageCount</p>
+    <br />
+    <nav>
+        <ul class="pagination justify-content-center">
+            @Html.PagedListPager(
+        Model,
+        page => Url.Action("Admin",
+        new
+        {
+            page,
+            findString = ViewBag.findString
+        }
+        ),
+        new PagedListRenderOptions()
+        {
+            LinkToFirstPageFormat = "<<",
+            LinkToPreviousPageFormat = "Anterior",
+            LinkToNextPageFormat = "Siuiente",
+            LinkToLastPageFormat = ">>",
+            DisplayEllipsesWhenNotShowingAllPageNumbers = false,
+            LiElementClasses = new List<string> { "page-item", "page-link" }
+        })
+        </ul>
+    </nav>
+
+    <br />
+    <br />
+
+
+</div>
+
+
+

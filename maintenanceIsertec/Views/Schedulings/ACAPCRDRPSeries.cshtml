@@ -1,0 +1,1520 @@
+﻿@model maintenanceIsertec.Models.AC.AC_RD_RP
+@using maintenanceIsertec.Models.Consult
+@{
+    ViewBag.Title = "AC APC RD-RP Series";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script type='text/javascript'>
+    function showComponentes() {
+        document.getElementById('componentes').style.display = "block";
+    }
+    function hideComponentes() {
+        document.getElementById('componentes').style.display = "none";
+    }
+
+    function confirmationPre() {
+
+        if ((document.getElementById('r1').checked == true | document.getElementById('r2').checked == true
+            | document.getElementById('r3').checked == true)
+            && (document.getElementById('r4').checked == true | document.getElementById('r5').checked == true)) {
+            document.getElementById('preroutine').style.display = "none";
+            document.getElementById('hiddenElement').style.display = "block";
+        } else {
+            $('#myModal').modal('show');
+        }
+    }
+    function backtopre() {
+        document.getElementById('preroutine').style.display = "block";
+        document.getElementById('hiddenElement').style.display = "none";
+        document.getElementById('hiddenElementE').style.display = "none";
+    }
+    function confirmation() {
+        document.getElementById('headerInformation').style.display = "none";
+        document.getElementById('preroutine').style.display = "none";
+        document.getElementById('hiddenElement').style.display = "none";
+        document.getElementById('hiddenElementE').style.display = "block";
+    }
+
+    function onchangeS(seleccion, desplegable) {
+        if (seleccion == "Otro") {
+            document.getElementById(desplegable).style.display = "block";
+        } else {
+            document.getElementById(desplegable).style.display = "none";
+        }
+    }
+    function contractInformation() {
+        if ((document.getElementById('contract').value != "")) {
+            $('#ModalContract').modal('show');
+        }
+    }
+</script>
+<div class="container">
+    <div id="headerInformation">
+        <span class="badge badge-success float-left">Energía y Aplicaciones</span>
+        <span class="badge badge-success float-right">Programado</span><br />
+        <h4>Network Air - Mantenimiento Preventivo A/C APC RD-RP Series</h4>
+        <h5>Lista de Control – Mantenimiento para Solución de Enfriamiento</h5>
+        <hr />
+        <h4>Detalles del Equipo / Sitio</h4>
+        @{
+            string rutinaAplicada = string.Empty;
+            int callID = 0;
+            string docNum = string.Empty;
+            string lineNum = string.Empty;
+            int contractID = 0;
+        }
+
+        @foreach (List itemHeader in ViewBag.header)
+        {
+            rutinaAplicada = itemHeader.U_RutinaMantenimiento;
+            docNum = itemHeader.DocNum;
+            callID = itemHeader.callID;
+            lineNum = itemHeader.Line;
+            contractID = itemHeader.contractID;
+            <div class="form-group row">
+                <div class="col-sm-4">
+                    <strong><label class="control-label">Orden de Trabajo </label></strong>
+                    <input type="text" class="form-control" value="@string.Concat(itemHeader.DocNum,"-",itemHeader.Line)" readonly>
+                </div>
+                @if (itemHeader.contractID > 0)
+                {
+                    <div class="col-sm-4">
+                        <strong><label class="control-label">No. Contrato </label></strong>
+                        <div class="input-group">
+                            <input type="text" class="form-control" value="@itemHeader.contractID" id="contract" readonly>
+                            <button class="btn btn-primary" type="button" onclick="contractInformation()"><i class="fas fa-eye"></i></button>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-sm-4">
+                        <strong><label class="control-label">No. Contrato </label></strong>
+                        <div class="input-group">
+                            <input type="text" class="form-control" value="N/A" id="contract" readonly>
+                            <button class="btn btn-primary" type="button" onclick="contractInformation()" disabled><i class="fas fa-eye"></i></button>
+                        </div>
+                    </div>
+                }
+            </div>
+            <fieldset disabled>
+                <div class="form-group row">
+                    <div class="col-sm-4">
+                        <strong><label class="control-label">Nombre del Cliente </label></strong>
+                        <input type="text" class="form-control" value="@itemHeader.custmrName">
+                    </div>
+                    <div class="col-sm-4">
+                        <strong><label class="control-label">Dirección </label></strong>
+                        <input type="text" class="form-control" value="@itemHeader.Address">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-8">
+                        <strong><label class="control-label">Descripción de la Unidad de Energia </label></strong>
+                        <input type="text" class="form-control" value="@itemHeader.itemName">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-4">
+                        <strong><label class="control-label">Código Artículo </label></strong>
+                        <input type="text" class="form-control" value="@itemHeader.itemCode">
+                    </div>
+                    <div class="col-sm-4">
+                        <strong><label class="control-label">Número de Serie </label></strong>
+                        <input type="text" class="form-control" value="@itemHeader.manufSN">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-4">
+                        <strong><label class="control-label">Rutina de Mantenimiento a aplicar </label></strong>
+                        <input type="text" class="form-control" value="@itemHeader.U_RutinaMantenimiento">
+                    </div>
+                    <div class="col-sm-4">
+                        <strong><label class="control-label">Tratado por </label></strong>
+                        <input type="text" class="form-control" value="@itemHeader.U_NAME">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-8">
+                        <strong><label class="control-label">Datos Adicionales </label></strong>
+                        <input type="text" class="form-control" value="@itemHeader.U_DatosAdicionales">
+                    </div>
+                </div>
+            </fieldset>
+
+        }
+        <br>
+    </div>
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div style="display:none">
+            <div class="col-sm-8" style="display:none">
+                <label class="control-label">Número de Llamada</label>
+                @Html.EditorFor(model => model.U_DocNum, new { htmlAttributes = new { @Value = docNum, @class = "form-control", @readonly = "readonly" } })
+            </div>
+            <div class="col-sm-4" style="display:none">
+                <label class="control-label">Número de Ticket</label>
+                @Html.EditorFor(model => model.U_Linea, new { htmlAttributes = new { @Value = lineNum, @class = "form-control", @readonly = "readonly" } })
+            </div>
+            <div class="col-sm-4" style="display:none">
+                <label class="control-label">Número de Ticket</label>
+                @Html.EditorFor(model => model.U_ServiceCallID, new { htmlAttributes = new { @Value = callID, @class = "form-control", @readonly = "readonly" } })
+            </div>
+        </div>
+        <div id="preroutine">
+            <h4>Pre-Rutina</h4>
+            <hr />
+            <h4>Sistema contra incendios</h4>
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">1. ¿El sistema de detección y supresión de incendios se encuentra desactivado? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S1_P1, new { @class = "form-control", @id = "r1", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S1_P1, new { @class = "form-control", @id = "r2", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S1_P1, new { @class = "form-control", @id = "r3", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">2. ¿El cliente autoriza mantenimiento? </label>
+                    <div class="card">
+                        <div id="test" class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S1_P2, new { @class = "form-control", @id = "r4", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S1_P2, new { @class = "form-control", @id = "r5", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S1_P2, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <button style="float:right" type="button" onclick="confirmationPre()" class="btn btn-second">Finalizar Pre-Rutina</button>
+        </div>
+        <div id="hiddenElement" style="display:none">
+            <h4>Evaporador</h4>
+            <hr />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">1. Estado de evaporador </label>
+                    @Html.DropDownListFor(model => Model.U_S2_P1, new List<SelectListItem>
+                    {
+                   new SelectListItem{ Text="Seleccione valor", Value = "0" },
+                        new SelectListItem{ Text="Buen estado", Value = "Buen estado" },
+                           new SelectListItem{ Text="Dañado", Value = "Dañado" },
+                           new SelectListItem{ Text="Fin vida util", Value = "Fin vida util" },
+                           new SelectListItem{ Text="Reemplazado", Value = "Reemplazado" },
+                    }, new { @class = "form-control" })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">2. Estado de ventiladores </label>
+                    @Html.DropDownListFor(model => Model.U_S2_P2, new List<SelectListItem>
+                    {
+                   new SelectListItem{ Text="Seleccione valor", Value = "0" },
+                        new SelectListItem{ Text="Buen estado", Value = "Buen estado" },
+                           new SelectListItem{ Text="Dañado", Value = "Dañado" },
+                           new SelectListItem{ Text="Fin vida util", Value = "Fin vida util" },
+                           new SelectListItem{ Text="Reemplazado", Value = "Reemplazado" },
+                    }, new { @class = "form-control" })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">3. Aislamiento </label>
+                    @Html.DropDownListFor(model => Model.U_S2_P3, new List<SelectListItem>
+                    {
+                   new SelectListItem{ Text="Seleccione valor", Value = "0" },
+                        new SelectListItem{ Text="Buen estado", Value = "Buen estado" },
+                           new SelectListItem{ Text="Dañado", Value = "Dañado" },
+                           new SelectListItem{ Text="Fin vida util", Value = "Fin vida util" },
+                           new SelectListItem{ Text="Reemplazado", Value = "Reemplazado" },
+                    }, new { @class = "form-control" })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">4. Limpieza Filtros </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P4, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P4, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P4, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">5. Limpieza interna </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P5, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P5, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P5, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">6. Limpieza externa </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P6, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P6, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P6, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">7. Limpieza de drenaje </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P7, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P7, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P7, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">8. Fugas aceite </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P8, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P8, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P8, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">9. Vibración </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P9, new { @class = "form-control", @type = "radio", @Value = "Normal", @autocomplete = "of" }) Normal
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P9, new { @class = "form-control", @type = "radio", @Value = "Alto", @autocomplete = "of" }) Alto
+                            </label>
+
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">10. Revisión física de componentes internos </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P10, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P10, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S2_P10, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+
+            <h4>Condensador</h4>
+            <hr />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">1. Estado condensador </label>
+                    @Html.DropDownListFor(model => Model.U_S3_P1, new List<SelectListItem>
+                    {
+                   new SelectListItem{ Text="Seleccione valor", Value = "0" },
+                        new SelectListItem{ Text="Buen estado", Value = "Buen estado" },
+                           new SelectListItem{ Text="Dañado", Value = "Dañado" },
+                           new SelectListItem{ Text="Fin vida util", Value = "Fin vida util" },
+                           new SelectListItem{ Text="Reemplazado", Value = "Reemplazado" },
+                    }, new { @class = "form-control" })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">2. Estado de ventilador </label>
+                    @Html.DropDownListFor(model => Model.U_S3_P2, new List<SelectListItem>
+                    {
+                   new SelectListItem{ Text="Seleccione valor", Value = "0" },
+                        new SelectListItem{ Text="Buen estado", Value = "Buen estado" },
+                           new SelectListItem{ Text="Dañado", Value = "Dañado" },
+                           new SelectListItem{ Text="Fin vida util", Value = "Fin vida util" },
+                           new SelectListItem{ Text="Reemplazado", Value = "Reemplazado" },
+                    }, new { @class = "form-control" })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">1. Limpieza serpentín </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P3, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P3, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P3, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">4. Limpieza interna </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P4, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P4, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P4, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">5. Limpieza externa  </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P5, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P5, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P5, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">6. Revisión de aspas </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P6, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P6, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P6, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">7. Fugas </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P7, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P7, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P7, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">8. Vibración </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P8, new { @class = "form-control", @type = "radio", @Value = "Normal", @autocomplete = "of" }) Normal
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S3_P8, new { @class = "form-control", @type = "radio", @Value = "Alto", @autocomplete = "of" }) Alto
+                            </label>
+
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <h4>Circuito de Refrigeración</h4>
+            <hr />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">1. Alta presión (PSI) en Display</label>
+                    @Html.EditorFor(model => model.U_S4_P1, new { htmlAttributes = new { @class = "form-control", @maxlength = "25" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">2. Baja presión (PSI) en Display</label>
+                    @Html.EditorFor(model => model.U_S4_P2, new { htmlAttributes = new { @class = "form-control", @maxlength = "25" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">3. Estado circuito refrigeración </label>
+                    @Html.DropDownListFor(model => Model.U_S4_P3, new List<SelectListItem>
+                    {
+                   new SelectListItem{ Text="Seleccione valor", Value = "0" },
+                        new SelectListItem{ Text="Buen estado", Value = "Buen estado" },
+                           new SelectListItem{ Text="Dañado", Value = "Dañado" },
+                           new SelectListItem{ Text="Fin vida util", Value = "Fin vida util" },
+                           new SelectListItem{ Text="Reemplazado", Value = "Reemplazado" },
+                    }, new { @class = "form-control" })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">4. Aislamiento </label>
+                    @Html.DropDownListFor(model => Model.U_S4_P4, new List<SelectListItem>
+                    {
+                   new SelectListItem{ Text="Seleccione valor", Value = "0" },
+                        new SelectListItem{ Text="Buen estado", Value = "Buen estado" },
+                           new SelectListItem{ Text="Dañado", Value = "Dañado" },
+                           new SelectListItem{ Text="Fin vida util", Value = "Fin vida util" },
+                           new SelectListItem{ Text="Reemplazado", Value = "Reemplazado" },
+                    }, new { @class = "form-control" })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">5. Visor de líquido lleno </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S4_P5, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S4_P5, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S4_P5, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">6. Revisión de presostatos </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S4_P6, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S4_P6, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S4_P6, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">7. Revisión de presión en display </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S4_P7, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S4_P7, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S4_P7, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">8. Revisión de presión manometros </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S4_P8, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S4_P8, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S4_P8, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">9. Fugas de refrigerante </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S4_P9, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S4_P9, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S4_P9, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <h4>Run Hours</h4>
+            <hr />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">1. Filtros </label>
+                    @Html.EditorFor(model => model.U_S5_P1, new { htmlAttributes = new { @class = "form-control", @maxlength = "25" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">2. Ventilador evaporadores </label>
+                </div>
+            </div>
+            <div class="form-row">
+
+                <div class="col-sm-3">
+                    <b><label class="control-label">Ventilador 1 </label></b>
+                    @Html.EditorFor(model => model.U_S5_P2_1, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+
+                <div class="col-sm-3">
+                    <b><label class="control-label">Ventilador 2 </label></b>
+                    @Html.EditorFor(model => model.U_S5_P2_2, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+
+            <div class="form-row">
+                <div class="col-sm-3">
+                    <b><label class="control-label">Ventilador 3 </label></b>
+                    @Html.EditorFor(model => model.U_S5_P2_3, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+                <div class="col-sm-3">
+                    <b><label class="control-label">Ventilador 4 </label></b>
+                    @Html.EditorFor(model => model.U_S5_P2_4, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-3">
+                    <b><label class="control-label">Ventilador 5 </label></b>
+                    @Html.EditorFor(model => model.U_S5_P2_5, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+                <div class="col-sm-3">
+                    <b><label class="control-label">Ventilador 6 </label></b>
+                    @Html.EditorFor(model => model.U_S5_P2_6, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">3. Heaters </label>
+                    @Html.EditorFor(model => model.U_S5_P3, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">4. Bomba condensado </label>
+                    @Html.EditorFor(model => model.U_S5_P4, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">5. Humificador </label>
+                    @Html.EditorFor(model => model.U_S5_P5, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">6. Compresor </label>
+                    @Html.EditorFor(model => model.U_S5_P6, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">7. Fuentes de poder</label>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <b><label class="control-label">Uppr</label></b>
+                    @Html.EditorFor(model => model.U_S5_P7_1, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <b><label class="control-label">Lowr</label></b>
+                    @Html.EditorFor(model => model.U_S5_P7_2, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <h4>Settings</h4>
+            <hr />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">1. Temperatura </label>
+                    @Html.EditorFor(model => model.U_S6_P1, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">2. Humedad </label>
+                    @Html.EditorFor(model => model.U_S6_P2, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <h4>Threshold</h4>
+            <hr />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">1. Threshold Rack Inlet (°C)</label>
+                    @Html.EditorFor(model => model.U_S7_P1, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">2. Threshold Supply Air (°C) </label>
+                    @Html.EditorFor(model => model.U_S7_P2, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">3. Threshold Return Air (°C)</label>
+                    @Html.EditorFor(model => model.U_S7_P3, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">4. High humid  </label>
+                    @Html.EditorFor(model => model.U_S7_P4, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">5. Low humid </label>
+                    @Html.EditorFor(model => model.U_S7_P5, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">6. Group Type </label>
+                    @Html.EditorFor(model => model.U_S7_P6, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">7. Firmware version </label>
+                    @Html.EditorFor(model => model.U_S7_P7, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <h4>Prueba de componentes de evaporador y condensador</h4>
+            <hr />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">1. Compresor</label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S8_P1, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S8_P1, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S8_P1, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">2. Humificador</label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S8_P2, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S8_P2, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S8_P2, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">3. Reheat</label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S8_P3, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S8_P3, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S8_P3, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">4. Bomba de condensado</label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S8_P4, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S8_P4, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S8_P4, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">5. Fuentes de poder</label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S8_P5, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S8_P5, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S8_P5, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">6. Ventiladores evaporador</label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S8_P6, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S8_P6, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S8_P6, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">6. Ventiladores Condensador</label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S8_P7, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S8_P7, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S8_P7, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <h4>Circuito de agua potable</h4>
+            <hr />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">1. Revisión y limpieza</label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S9_P1, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S9_P1, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S9_P1, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">2. Fugas</label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S9_P2, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S9_P2, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S9_P2, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <h4>Sistema de drenaje</h4>
+            <hr />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">1. Revisión y limpieza de bandeja</label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S10_P1, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S10_P1, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S10_P1, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">2. Revisión y limpieza de bomba</label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S10_P2, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S10_P2, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S10_P2, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+
+
+            <h4>Mediciones eléctricas</h4>
+            <hr />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">1. Voltaje evaporador</label>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <b>L1-L2</b>
+                    @Html.EditorFor(model => model.U_S11_P1_1, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <b>L1-L3</b>
+                    @Html.EditorFor(model => model.U_S11_P1_2, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <b>L2-L3</b>
+                    @Html.EditorFor(model => model.U_S11_P1_3, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">2. Amperaje total evaporador</label>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <b>L1</b>
+                    @Html.EditorFor(model => model.U_S11_P2_1, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <b>L2</b>
+                    @Html.EditorFor(model => model.U_S11_P2_2, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <b>L3</b>
+                    @Html.EditorFor(model => model.U_S11_P2_3, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">3. Amperaje fan 1</label>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <b>L1</b>
+                    @Html.EditorFor(model => model.U_S11_P3_1, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <b>L2</b>
+                    @Html.EditorFor(model => model.U_S11_P3_2, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <b>L3</b>
+                    @Html.EditorFor(model => model.U_S11_P3_3, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">4. Amperaje fan 2</label>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <b>L1</b>
+                    @Html.EditorFor(model => model.U_S11_P4_1, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <b>L2</b>
+                    @Html.EditorFor(model => model.U_S11_P4_2, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <b>L3</b>
+                    @Html.EditorFor(model => model.U_S11_P4_3, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+
+
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">5. Amperaje compresor</label>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <b>L1</b>
+                    @Html.EditorFor(model => model.U_S11_P5_1, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <b>L2</b>
+                    @Html.EditorFor(model => model.U_S11_P5_2, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <b>L3</b>
+                    @Html.EditorFor(model => model.U_S11_P5_3, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">6. Amperaje reheat 1</label>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <b>L1</b>
+                    @Html.EditorFor(model => model.U_S11_P6_1, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <b>L2</b>
+                    @Html.EditorFor(model => model.U_S11_P6_2, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <b>L3</b>
+                    @Html.EditorFor(model => model.U_S11_P6_3, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+
+
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">7. Amperaje reheat 2</label>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <b>L1</b>
+                    @Html.EditorFor(model => model.U_S11_P7_1, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <b>L2</b>
+                    @Html.EditorFor(model => model.U_S11_P7_2, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <b>L3</b>
+                    @Html.EditorFor(model => model.U_S11_P7_3, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">8. Amperaje humificador</label>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <b>L1</b>
+                    @Html.EditorFor(model => model.U_S11_P8_1, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <b>L2</b>
+                    @Html.EditorFor(model => model.U_S11_P8_2, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <b>L3</b>
+                    @Html.EditorFor(model => model.U_S11_P8_3, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">9. Voltaje condensadora</label>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <b>L1-L2</b>
+                    @Html.EditorFor(model => model.U_S11_P9_1, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <b>L1-L3</b>
+                    @Html.EditorFor(model => model.U_S11_P9_2, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <b>L2-L3</b>
+                    @Html.EditorFor(model => model.U_S11_P9_3, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">10. Amperaje ventilador condensadora</label>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <b>L1</b>
+                    @Html.EditorFor(model => model.U_S11_P10_1, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <b>L2</b>
+                    @Html.EditorFor(model => model.U_S11_P10_2, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <b>L3</b>
+                    @Html.EditorFor(model => model.U_S11_P10_3, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                </div>
+            </div><br />
+
+
+            <h4>Revisión y apriete de componentes evaporador</h4>
+            <hr />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">1. Conectores</label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S12_P1, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S12_P1, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S12_P1, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">2. Breaker</label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S12_P2, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S12_P2, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S12_P2, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">3. Seccionadores</label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S12_P3, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S12_P3, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S12_P3, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+
+            <h4>Revisión y apriete de componentes condensador</h4>
+            <hr />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">1. Conectores</label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S13_P1, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S13_P1, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S13_P1, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">2. Breaker</label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S13_P2, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S13_P2, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S13_P2, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">3. Seccionadores</label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S13_P3, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S13_P3, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S13_P3, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            @if (ViewBag.mantenimiento == "R4")
+            {
+                <h4>Revisión y apriete de borners en tableros y equipos</h4>
+                <hr />
+                <div class="form-row">
+                    <div class="col-sm-6">
+                        <label class="control-label">1. Acometida de evaporador</label>
+                        <div class="card">
+                            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                <label class="btn btn-outline-secondary">
+                                    @Html.TextBoxFor(model => Model.U_S14_P1, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                                </label>
+                                <label class="btn btn-outline-secondary">
+                                    @Html.TextBoxFor(model => Model.U_S14_P1, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                                </label>
+                                <label class="btn btn-outline-secondary">
+                                    @Html.TextBoxFor(model => Model.U_S14_P1, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div><br />
+                <div class="form-row">
+                    <div class="col-sm-6">
+                        <label class="control-label">2. Acometida de condensador</label>
+                        <div class="card">
+                            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                <label class="btn btn-outline-secondary">
+                                    @Html.TextBoxFor(model => Model.U_S14_P2, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                                </label>
+                                <label class="btn btn-outline-secondary">
+                                    @Html.TextBoxFor(model => Model.U_S14_P2, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                                </label>
+                                <label class="btn btn-outline-secondary">
+                                    @Html.TextBoxFor(model => Model.U_S14_P2, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div><br />
+            }
+            <h4>Registro de alarmas y eventos</h4>
+            <hr />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label class="control-label">1. ¿El sistema de supresión de incendios se encuentra activado? </label>
+                    <div class="card">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S15_P1, new { @class = "form-control", @type = "radio", @Value = "Si", @autocomplete = "of" }) Si
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S15_P1, new { @class = "form-control", @type = "radio", @Value = "No", @autocomplete = "of" }) No
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                @Html.TextBoxFor(model => Model.U_S15_P1, new { @class = "form-control", @type = "radio", @Value = "N/A", @autocomplete = "of" }) N/A
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <h4>Observaciones</h4>
+            <hr />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    @Html.TextAreaFor(model => model.U_S16_P1, new { @class = "form-control", @rows = 3, @maxlength = 1500 })
+                </div>
+            </div><br />
+            <button style="float:right" type="button" onclick="confirmation()" class="btn btn-second">Finalizar Rutina</button>
+        </div>
+        <div id="hiddenElementE" style="display:none">
+            <div class="our-skills">
+                <div class="card" style="border:none !important">
+                    <div class="box-shadow">
+                        <h4 class="text-center">  Confirmación de Servicio</h4>
+                        <hr />
+                        <div class="form-row">
+                            <div class="col-sm-12">
+                                <label>La orden de trabajo <strong> @string.Concat(docNum, "-", lineNum) </strong>  ha sido finalizada!</label> <br />
+                                <label class="control-label">Ingrese correo electrónico para enviar la confirmación:</label><br />
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-sm-12">
+                                @Html.EditorFor(model => model.U_correo, new { htmlAttributes = new { @class = "form-control", @required = "required", @type = "email", @multiple = "multiple", @maxlength = "200" } })
+                            </div>
+                        </div><br />
+                       <input style="float:right" type="submit" value="Enviar Confirmación" class="btn btn-primary" onclick="this.form.submit(); this.disabled = true; this.value = 'Enviando Confirmacion...';" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <br />
+    <br />
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Complete los datos</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Debe de completar la pre-rutina para continuar con el mantenimiento asignado</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    @{
+        var data = new maintenanceIsertec.Connection.Contracts.DataContracts().getDetails(contractID);
+
+        <div class="modal fade" id="ModalContract" tabindex="-1" role="dialog" aria-labelledby="ModalContract" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="text-center modal-title" id="ModalContract">Cobertura del Contrato</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <fieldset disabled>
+                            <div class="form-group row">
+                                <div class="col-sm-12">
+                                    <strong><label class="control-label">No. Contrato </label></strong>
+                                    <input type="text" class="form-control" value="@data.ContractID">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-12">
+                                    <strong><label class="control-label">Tratado por </label></strong>
+                                    <input type="text" class="form-control" value="@data.U_NAME">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-6">
+                                    <strong><label class="control-label">Número de OV </label></strong>
+                                    <input type="text" class="form-control" value="@data.U_numeroOV">
+                                </div>
+                                <div class="col-sm-6">
+                                    <strong><label class="control-label">Tipo Contrato </label></strong>
+                                    <input type="text" class="form-control" value="@data.Tipos">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-12">
+                                    <strong><label class="control-label">Cobertura </label></strong>
+                                    <textarea rows="5" type="text" class="form-control">@data.Remarks1</textarea>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    <div class="modal-footer">
+                        @Html.ActionLink("Detalles", "details", "Contracts", new
+                   {
+                       id = data.ContractID
+                   }, new { @class = "btn btn-primary" })
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+</div>
